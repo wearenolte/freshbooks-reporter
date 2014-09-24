@@ -47,6 +47,7 @@ module.exports.routes = {
   ***************************************************************************/
 
   'get /logout': 'AuthController.logout',
-  'post /auth/local': 'AuthController.callback',
+  'get /current-user': 'AuthController.currentUser',
+  'post /auth/local': 'AuthController.callback'
 
 };

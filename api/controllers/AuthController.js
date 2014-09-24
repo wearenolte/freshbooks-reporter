@@ -23,6 +23,10 @@ var AuthController = {
     res.redirect('/');
   },
 
+  currentUser: function(req, res) {
+    return res.json(200, req.user);
+  },
+
   /**
    * Create a authentication callback endpoint
    *

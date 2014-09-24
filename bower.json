@@ -8,7 +8,9 @@
   ],
   "dependencies": {
     "jquery": "~2.1.1",
-    "bootstrap": "~3.2.0"
+    "bootstrap": "~3.2.0",
+    "angular": "~1.2.25",
+    "angular-route": "~1.2.25"
   },
   "name": "freshbooks-reporter",
   "version": "0.0.1",

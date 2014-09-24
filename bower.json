@@ -1,0 +1,14 @@
+{
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {},
+  "name": "freshbooks-reporter",
+  "version": "0.0.1",
+  "author": "MoxieNYC",
+  "private": true
+}

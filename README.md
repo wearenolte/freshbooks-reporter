@@ -33,7 +33,13 @@ $ npm install
 After the install process is over, you'll be able to run your application with:
 
 ```
-$ sails lift
+$ ./node_modules/forever/bin/forever -w start app.js
+```
+
+If you want to see the application logs:
+
+```
+$./node_modules/forever/bin/forever logs app.js -f
 ```
 
 Your application should run on the 1337 port so in your browser just go to [http://localhost:1337](http://localhost:1337)

@@ -51,5 +51,7 @@ module.exports.routes = {
 
   'post /login': 'AuthController.process',
   'get /logout': 'AuthController.logout',
-  'get /current-user': 'AuthController.currentUser'
+  'get /current-user': 'AuthController.currentUser',
+
+  'post /refresh-all': 'ContractorController.refreshAll'
 };

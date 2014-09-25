@@ -6,7 +6,7 @@
  */
 
 module.exports = {
-  find: function(req, res) {
+  refreshAll: function(req, res) {
 
     Freshbooks.api.call("project.list", {per_page: 100}, function(err, response) {
       var projects = response.response.projects.project;
@@ -23,10 +23,9 @@ module.exports = {
 
       _.each(rawContractors, function(contractor) {
         Freshbooks.api.call("staff.get", {staff_id: contractor.contractor_id}, function(err, response) {
-          contractors.push(response.response.staff);
-          if(contractors.length === rawContractors.length) {
-            return res.json(200, {contractors: contractors});
-          };
+          Contractor.findOrCreate({staff_id: contractor.contractor_id}, response.response.staff).exec(function(err, dbContractor) {
+            console.log("err, dbContractor", err, dbContractor);
+          });
         });
       });
     });

@@ -8,7 +8,7 @@
 module.exports = {
 
   attributes: {
-    contractor_id: {
+    staff_id: {
       type: 'string',
       required: true
     },

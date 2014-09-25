@@ -21,7 +21,7 @@ angular.module('contractor.api', [])
           })
             .then(
               function(response) {
-                dfd.resolve(response.data.contractors);
+                dfd.resolve(response.data);
               },
               function(error) {
                 dfd.reject(error);

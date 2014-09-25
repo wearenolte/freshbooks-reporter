@@ -15,9 +15,9 @@ angular.module('security.service', [])
       redirect("/login");
     },
 
-    // Attempt to authenticate a user by the given email and password
-    login: function(email, password) {
-      var request = $http.post('/login', {email: email, password: password});
+    // Attempt to authenticate a user by the given username and password
+    login: function(username, password) {
+      var request = $http.post('/login', {username: username, password: password});
       return request.then(function(response) {
         service.currentUser = response.data.user;
         return service.isAuthenticated();
@@ -38,7 +38,7 @@ angular.module('security.service', [])
         return $q.when(service.currentUser);
       } else {
         return $http.get('/current-user').then(function(response) {
-          service.currentUser = response.data.user;
+          service.currentUser = response.data[0];
           return service.currentUser;
         });
       }

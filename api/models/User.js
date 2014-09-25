@@ -17,10 +17,6 @@ module.exports = {
     email: {
       type: 'email',
       unique: true
-    },
-    passports: {
-      collection: 'Passport',
-      via: 'user'
     }
   }
 };

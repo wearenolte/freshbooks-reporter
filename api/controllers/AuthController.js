@@ -22,11 +22,15 @@ module.exports = {
 
   logout: function(req, res) {
     req.logout();
-    res.json(200, {messages: ['logout successful']});
+    res.json(200, {messages: ['You Have Successfully Logged Out']});
   },
 
   currentUser: function(req, res) {
-    return res.json(200, req.user);
+    if (req.user) {
+      return res.json(200, req.user);
+    } else {
+      return res.json(401, {messages: ['Unauthorized']})
+    }
   },
 
   _config: {}

@@ -1,6 +1,8 @@
 angular.module('app', [
   'ngRoute',
-  'security'
+  'security',
+  'login',
+  'dashboard'
 ]);
 
 angular.module('app').config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
@@ -23,21 +25,11 @@ angular.module('app').controller('AppCtrl', ['$scope', function($scope) {
 
 angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route', 'security',
   function ($scope, $location, $route, security) {
-  $scope.location = $location;
 
   $scope.isAuthenticated = security.isAuthenticated;
-  $scope.isAdmin = security.isAdmin;
 
-  $scope.home = function () {
-    if (security.isAuthenticated()) {
-      $location.path('/dashboard');
-    } else {
-      $location.path('/projectsinfo');
-    }
-  };
-
-  $scope.isNavbarActive = function (navBarPath) {
-    return navBarPath === breadcrumbs.getFirst().name;
+  $scope.isActive = function (path) {
+    return $location.path() === path;
   };
 
 }]);

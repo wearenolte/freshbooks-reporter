@@ -47,7 +47,7 @@ module.exports.routes = {
   ***************************************************************************/
 
   /* Angular templates */
-  'get /templates/*': 'TemplateController.find'
+  'get /templates/*': 'TemplateController.find',
 
   'post /login': 'AuthController.process',
   'get /logout': 'AuthController.logout',

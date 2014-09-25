@@ -19,7 +19,7 @@ angular.module('security.service', [])
     login: function(username, password) {
       var request = $http.post('/login', {username: username, password: password});
       return request.then(function(response) {
-        service.currentUser = response.data.user;
+        service.currentUser = response.data[0];
         return service.isAuthenticated();
       });
     },
@@ -40,6 +40,11 @@ angular.module('security.service', [])
         return $http.get('/current-user').then(function(response) {
           service.currentUser = response.data[0];
           return service.currentUser;
+        }, function(response) {
+          if (response.status === 401) {
+            service.currentUser = null;
+            redirect('/login')
+          };
         });
       }
     },
@@ -49,7 +54,7 @@ angular.module('security.service', [])
 
     // Is the current user authenticated?
     isAuthenticated: function(){
-      return !!service.currentUser;
+      return Boolean(service.currentUser);
     },
 
     // Is the current user an adminstrator?

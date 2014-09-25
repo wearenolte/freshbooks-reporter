@@ -19,8 +19,7 @@ angular.module('security.authorization', ['security.service'])
       // Require that there is an authenticated user
       // (use this in a route resolve to prevent non-authenticated users from entering that route)
       requireAuthenticatedUser: function() {
-        var promise = security.requestCurrentUser().then(function(userInfo) {});
-        return promise;
+        return security.requestCurrentUser();
       },
 
       // Require that there is an administrator logged in

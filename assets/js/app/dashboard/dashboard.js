@@ -2,6 +2,7 @@ angular.module('dashboard', [
   'security.authorization',
   'contractors.list',
   'contractor.api',
+  'projects.list',
   'project.api'
 ])
 
@@ -22,5 +23,4 @@ angular.module('dashboard', [
   function ($scope, $location, contractors, projects) {
     $scope.contractors = contractors;
     $scope.projects = projects;
-    window.projects = projects;
   }]);

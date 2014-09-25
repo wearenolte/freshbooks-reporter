@@ -1,5 +1,6 @@
 angular.module('app', [
   'ngRoute',
+  'ngAnimate',
   'security',
   'login',
   'dashboard'

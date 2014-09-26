@@ -53,5 +53,5 @@ module.exports.routes = {
   'get /logout': 'AuthController.logout',
   'get /current-user': 'AuthController.currentUser',
 
-  'post /refresh-all': 'ContractorController.refreshAll'
+  'post /contractor/refresh-all': 'ContractorController.refreshAll'
 };

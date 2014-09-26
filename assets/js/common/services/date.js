@@ -14,11 +14,11 @@ angular.module('services.date', [])
 
     return {
       getDate: function() {
-        return $filter('date')(new Date(), dateFormat);//2014-09-25
+        return $filter('date')(new Date(), dateFormat);
       },
 
       getFromDate: function(dayOffset) {
-        dayOffset = dayOffset || 0;
+        dayOffset = typeof dayOffset === "undefined" ? 365 : dayOffset;
 
         return $filter('date')(addDays(new Date(), -dayOffset), dateFormat);
       }

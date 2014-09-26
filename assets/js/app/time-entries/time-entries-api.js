@@ -6,22 +6,23 @@ angular.module('timeEntries.api', ['services.date'])
 
 .provider('timeEntries', {
 
-  getAllTimeEntries: ['timeEntries', function(timeEntries ) {
+  getAllTimeEntries: ['timeEntries', function(timeEntries) {
     return timeEntries.getAllTimeEntries();
   }],
 
-  $get: ['$http', '$q', 'DateService', function($http, $q) {
+  $get: ['$http', '$q', 'DateService', function($http, $q, DateService) {
       var service = {
-        getAllTimeEntries: function() {
+        getAllTimeEntries: function(dayOffset) {
           var dfd = $q.defer();
 
           $http({
             method: 'GET',
-            url: '/timeEntry?' + "date_from=2014-09-25"
+            url: '/timeEntry?' + "date_from=" + DateService.getFromDate(dayOffset)
           })
             .then(
               function(response) {
-                dfd.resolve(response.data);
+                var res = _.isArray(response.data) ? response.data : [response.data];
+                dfd.resolve(res);
               },
               function(error) {
                 dfd.reject(error);

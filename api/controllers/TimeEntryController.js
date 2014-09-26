@@ -7,7 +7,7 @@
 
 module.exports = {
 	find: function(req, res) {
-    Freshbooks.api.call('time_entry.list', {date_from: req.query.date_from}, function(err, response) {
+    Freshbooks.api.call('time_entry.list', {date_from: req.query.date_from, per_page: 1000}, function(err, response) {
       if (err) {
         res.json(500, err);
       } else {

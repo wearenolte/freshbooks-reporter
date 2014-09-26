@@ -1,0 +1,40 @@
+<div class="panel panel-primary">
+  <div class="panel-heading clearfix">
+    <h3 class="panel-title pull-left">Time Entries</h3>
+
+    <div class="pull-right">
+      <div class="dropdown pull-left">
+        <a href="#" class="dropdown-toggle white-text" dropdown data-toggle="dropdown">
+          <span ng-bind="currentDateFilter.name"></span> <b class="caret"></b>
+        </a>
+        <ul class="dropdown-menu">
+          <li ng-repeat="dateFilter in dateFilters">
+            <a href ng-click="setDateFilter(dateFilter)">{{dateFilter.name}}</a>
+          </li>
+        </ul>
+      </div>
+      <input type="text" placeholder="Search" ng-model="timeEntrySearch" class="pull-right search-box">
+    </div>
+  </div>
+
+  <div class="panel-body">
+    <table class="table table-striped table-hover ">
+      <thead>
+        <tr>
+          <th>Project</th>
+          <th>Contractor</th>
+          <th>Hours</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="timeEntry in timeEntries | filter:timeEntrySearch | byContractor:currentContractor">
+          <td ng-bind="timeEntry.project.name"></td>
+          <td ng-bind="fullName(timeEntry.contractor)"></td>
+          <td ng-bind="timeEntry.hours"></td>
+          <td ng-bind="timeEntry.date | date: 'MM/dd/yy'"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

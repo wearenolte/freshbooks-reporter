@@ -1,14 +1,16 @@
 angular.module('app', [
   'ngRoute',
   'ngAnimate',
+  'angular-loading-bar',
   'security',
   'login',
-  'dashboard'
+  'dashboard',
+  'contractor-detail'
 ]);
 
 angular.module('app').config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
   // $locationProvider.html5Mode(true);
-  $routeProvider.otherwise({redirectTo:'/'});
+  $routeProvider.otherwise({redirectTo:'/dashboard'});
 }]);
 
 angular.module('app').run(['security', function(security) {

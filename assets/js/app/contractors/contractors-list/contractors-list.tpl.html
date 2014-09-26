@@ -1,12 +1,12 @@
 <ul>
   <li ng-repeat="contractor in contractors" class="media personal-card">
     <a class="pull-left" href="#">
-      <gravatar email="contractor.email" size="100" class="media-object medium"></gravatar>
+      <gravatar email="contractor.email" size="60" class="media-object medium"></gravatar>
     </a>
     <div class="media-body update-card-body">
       <h4 class="media-heading" ng-bind="fullName(contractor)"></h4>
       <p ng-bind="contractor.email"></p>
+      <a href="#/contractor/{{contractor.id}}">View more</a>
     </div>
-    <a href="#/contractor/contractor.contractor_id">View more</a>
   </li>
 </ul>

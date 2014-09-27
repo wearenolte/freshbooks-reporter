@@ -11,13 +11,14 @@ angular.module('timeEntries.list-directive', [
     scope: {
       projects: '=',
       contractors: '=',
-      currentContractor: '='
+      currentContractor: '=',
+      filterByProject: '='
     },
     link: function($scope, $element, $attrs) {
       var parseTimeEntries = function(timeEntries) {
         return _.map(timeEntries, function(timeEntry) {
-          timeEntry.contractor = _.find($scope.contractors, {staff_id: timeEntry.staff_id});
-          timeEntry.project = _.find($scope.projects, {project_id: timeEntry.project_id});
+          timeEntry.contractor = _.find($scope.contractors, {staff_id: timeEntry.staff_id.toString()});
+          timeEntry.project = _.find($scope.projects, {project_id: timeEntry.project_id.toString()});
           return timeEntry;
         });
       };
@@ -40,11 +41,19 @@ angular.module('timeEntries.list-directive', [
 
       $scope.setDateFilter = function(dateFilter) {
         $scope.currentDateFilter = dateFilter;
-        timeEntries.getAllTimeEntries(dateFilter.dayOffset)
+        timeEntries.getAllTimeEntries(dateFilter.dayOffset, $scope.filterByProject)
           .then(
             function(response) {
               $scope.timeEntries = parseTimeEntries(response);
           });
+      };
+
+      $scope.fullName = function(contractor) {
+        if (contractor) {
+          return contractor.first_name + " " + contractor.last_name;
+        } else {
+          return "-";
+        };
       };
 
       $scope.setDateFilter($scope.dateFilters[0]);

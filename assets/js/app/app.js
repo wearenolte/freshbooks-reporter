@@ -5,7 +5,8 @@ angular.module('app', [
   'security',
   'login',
   'dashboard',
-  'contractor-detail'
+  'contractor-detail',
+  'project-detail'
 ]);
 
 angular.module('app').config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {

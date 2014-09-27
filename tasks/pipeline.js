@@ -25,6 +25,7 @@ var cssFilesToInject = [
 var jsFilesToInject = [
   'vendor/jquery/*.js',
   'vendor/angular/*.js',
+  'vendor/d3/d3.js',
   'vendor/**/*.js',
 
   // Load sails.io before everything else

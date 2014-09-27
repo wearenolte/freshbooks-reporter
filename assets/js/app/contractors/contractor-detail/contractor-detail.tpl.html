@@ -1,4 +1,4 @@
-<h3 ng-bind="fullName(contractor)"></h3>
+<h3 ng-bind="contractor.first_name + contractor.last_name"></h3>
 <p><strong>contractor</strong></p>
 <p ng-bind="contractor.email"></p>
 
@@ -13,4 +13,18 @@
   </div>
 
   <div class="col-md-8" time-entries-list contractors="contractors" projects="projects" current-contractor="contractor"></div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title">Projects</h3>
+        </div>
+        <div class="panel-body">
+          <div heat-map contractor="contractor"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

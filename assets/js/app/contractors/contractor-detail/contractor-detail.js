@@ -2,7 +2,8 @@ angular.module('contractor-detail', [
   'security.authorization',
   'contractor.api',
   'projects.list',
-  'project.api'
+  'project.api',
+  'directives.heat-map'
 ])
 
 .config(['$routeProvider', 'securityAuthorizationProvider', 'contractorProvider', 'projectProvider',
@@ -28,10 +29,7 @@ angular.module('contractor-detail', [
     };
 
     $scope.contractor = contractor;
+    $scope.contractors = [contractor];
     $scope.projects = projects;
     $scope.contractorProjects = filterProjectsByContractor(projects);
-
-    $scope.fullName = function(contractor) {
-      return contractor.first_name + ' ' + contractor.last_name;
-    };
   }]);

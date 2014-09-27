@@ -1,6 +1,6 @@
 angular.module('contractors.list-directive', ['directives.gravatar'])
 
-.directive('contractorsList', function () {
+.directive('contractorsList', ['$http', function ($http) {
   return {
     restrict: 'A',
     replace: false,
@@ -13,6 +13,21 @@ angular.module('contractors.list-directive', ['directives.gravatar'])
       $scope.fullName = function(contractor) {
         return contractor.first_name + " " + contractor.last_name;
       };
+
+      $scope.refreshContractors = function() {
+        $http({
+          method: 'POST',
+          url: '/contractor/refresh-all'
+        })
+          .then(
+            function(response) {
+              console.info("Contractors updated");
+            },
+            function(error) {
+              console.error("Error updating contracts");
+            }
+          );
+      };
     }
   };
-});
+}]);

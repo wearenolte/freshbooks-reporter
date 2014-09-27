@@ -8,7 +8,7 @@
   <tbody>
     <tr ng-repeat="project in projects">
       <td ng-bind="project.name"></td>
-      <td><a href="#">View</a></td>
+      <td><a href="#/projects/{{project.project_id}}">View</a></td>
     </tr>
   </tbody>
 </table>

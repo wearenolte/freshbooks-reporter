@@ -1,12 +1,23 @@
-<ul>
-  <li ng-repeat="contractor in contractors" class="media personal-card">
-    <a class="pull-left" href="#">
-      <gravatar email="contractor.email" size="60" class="media-object medium"></gravatar>
+<div class="panel panel-primary">
+  <div class="panel-heading clearfix">
+    <h3 class="panel-title pull-left">Contractors</h3>
+    <a href ng-click="refreshContractors()" class="pull-right white-text">
+      <i class="fa fa-refresh"></i>
     </a>
-    <div class="media-body update-card-body">
-      <h4 class="media-heading" ng-bind="fullName(contractor)"></h4>
-      <p ng-bind="contractor.email"></p>
-      <a href="#/contractor/{{contractor.id}}">View more</a>
-    </div>
-  </li>
-</ul>
+  </div>
+  <div class="panel-body">
+    <ul>
+      <li ng-repeat="contractor in contractors" class="media personal-card">
+        <a class="pull-left" href="#">
+          <gravatar email="contractor.email" size="60" class="media-object medium"></gravatar>
+        </a>
+        <div class="media-body update-card-body">
+          <h4 class="media-heading" ng-bind="fullName(contractor)"></h4>
+          <p ng-bind="contractor.email"></p>
+          <a href="#/contractor/{{contractor.id}}">View more</a>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+

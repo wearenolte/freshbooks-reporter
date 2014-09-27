@@ -15,5 +15,15 @@ module.exports = {
         res.json(200, projects);
       };
     });
+  },
+
+  findOne: function(req, res) {
+    Freshbooks.api.call('project.get', {project_id: req.params.id}, function(err, response) {
+      if (err) {
+        res.json(500, err);
+      } else {
+        res.json(200, response.response.project);
+      };
+    });
   }
 };

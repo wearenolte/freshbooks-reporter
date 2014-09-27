@@ -6,10 +6,11 @@
  */
 
 var FreshbooksApi = require("freshbooks-node");
-var connection = new FreshbooksApi(
-  sails.config.freshbooks.login, sails.config.freshbooks.apiKey, sails.config.freshbooks.appName
-);
 
 module.exports = {
-  api: connection
+  api: function() {
+    return new FreshbooksApi(
+      sails.config.freshbooks.login, sails.config.freshbooks.apiKey, sails.config.freshbooks.appName
+    );
+  }
 };

@@ -9,7 +9,7 @@ module.exports = {
   refreshAll: function(req, res) {
     var currentPage = 1;
     var fetchPage = function() {
-      Freshbooks.api.call('time_entry.list', {per_page: 100, page: currentPage}, function(err, response) {
+      Freshbooks.api().call('time_entry.list', {per_page: 100, page: currentPage}, function(err, response) {
         if(err) return res.json(500, err);
         if(!response.response.time_entries) return res.json(200);
 

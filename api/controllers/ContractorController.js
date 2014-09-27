@@ -17,13 +17,20 @@ module.exports = {
         if (project.contractors.contractor) {
           rawContractors = rawContractors.concat(project.contractors.contractor);
         };
+
+        if(project.staff.staff) {
+          rawContractors = rawContractors.concat(project.staff.staff);
+        };
       });
 
-      rawContractors = _.uniq(rawContractors, "contractor_id");
-
+      rawContractors = _.uniq(rawContractors, function(rawContractor) {
+        return rawContractor.staff_id || rawContractor.contractor_id;
+      });
       _.each(rawContractors, function(contractor) {
-        Freshbooks.api.call("staff.get", {staff_id: contractor.contractor_id}, function(err, response) {
-          Contractor.findOrCreate({staff_id: contractor.contractor_id}, response.response.staff).exec(function(err, dbContractor) {
+        var id = contractor.contractor_id || contractor.staff_id;
+
+        Freshbooks.api.call("staff.get", {staff_id: id}, function(err, response) {
+          Contractor.findOrCreate({staff_id: id}, response.response.staff).exec(function(err, dbContractor) {
             contractorCount++;
             if (contractorCount === rawContractors.length) {
               res.json(200);

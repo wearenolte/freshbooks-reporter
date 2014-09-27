@@ -6,14 +6,23 @@
  */
 
 module.exports = {
-	find: function(req, res) {
-    Freshbooks.api.call('time_entry.list', {date_from: req.query.date_from, per_page: 1000}, function(err, response) {
-      if (err) {
-        res.json(500, err);
-      } else {
-        res.json(200, response.response.time_entries.time_entry);
-      };
-    });
+  refreshAll: function(req, res) {
+    var currentPage = 1;
+    var fetchPage = function() {
+      Freshbooks.api.call('time_entry.list', {per_page: 100, page: currentPage}, function(err, response) {
+        if(err) return res.json(500, err);
+        if(!response.response.time_entries) return res.json(200);
+
+        TimeEntryManager.saveTimeEntries(response.response.time_entries.time_entry)
+          .then(function(err, res) {
+            currentPage++;
+            console.log("Aboout to request againt");
+            fetchPage();
+          });
+      });
+    };
+
+    fetchPage();
   }
 };
 

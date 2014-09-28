@@ -20,7 +20,13 @@
   <body ng-controller="AppCtrl">
     <%- partial ('shared/header.ejs') %>
 
-    <%- body %>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 col-lg-offset-1">
+                <%- body %>
+            </div>
+        </div>
+    </div>
 
     <!--TEMPLATES-->
     

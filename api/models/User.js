@@ -17,6 +17,10 @@ module.exports = {
       type: 'string',
       required: true
     },
+    superAdmin: {
+      type: 'boolean',
+      defaultsTo: false
+    },
 
     //Override toJSON method to remove password from API
     toJSON: function() {

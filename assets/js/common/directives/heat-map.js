@@ -21,7 +21,7 @@ angular.module('directives.heat-map', ['timeEntries.api'])
           var allTimeEntries = $filter('byContractor')(response, $scope.contractor);
           _.each(allTimeEntries, function(timeEntry) {
             var date = Math.round(new Date(timeEntry.date).getTime() / 1000.0);
-            rtn[date] = timeEntry.hours;
+            rtn[date] = rtn[date] ? rtn[date] + timeEntry.hours : timeEntry.hours;
           });
 
           cal.init({

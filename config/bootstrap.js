@@ -13,5 +13,11 @@ module.exports.bootstrap = function(cb) {
 
   // It's very important to trigger this callback method when you are finished
   // with the bootstrap!  (otherwise your server will never lift, since it's waiting on the bootstrap)
+
+  setInterval(function() {
+    console.info("============ Fetching Time Entries ============");
+    TimeEntryScrapper.startScrapping({dateFrom: DateFormatter.parse(new Date)});
+  }, 15 * 60 * 1000);
+
   cb();
 };

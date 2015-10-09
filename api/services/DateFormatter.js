@@ -8,11 +8,10 @@
 module.exports = {
 
   parse: function(date) {
-    var year = date.getFullYear();
-    var rawMonth = date.getMonth() + 1;
-    var month = rawMonth < 10 ? "0" + rawMonth : rawMonth;
-    var day = date.getDate();
+    var year  = date.getFullYear();
+    var month = date.getMonth() + 1;
+    var day   = date.getDate();
 
-    return year + "-" + month + "-" + day;
+    return year + "-" + (month < 10 ? '0' : '') + month + "-" + (day < 10 ? '0' : '') + day;
   }
 };

@@ -31,7 +31,7 @@ $ npm install
 
 For local testing create the file config/local.js with the following configuration:
 
-```json
+```javascript
 module.exports = {
   connections: {
     localDiskDb: {

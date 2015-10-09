@@ -30,7 +30,7 @@ console.log("queryOptions", queryOptions);
         .then(function(err, res) {
           _this.currentPage++;
           console.log('============ Scapping page ' + _this.currentPage + ' ============');
-          _this.startScrapping();
+          _this.startScrapping(options);
         });
     });
 

@@ -29,6 +29,29 @@ To install Node.js dependencies, in the application folder run this in the comma
 $ npm install
 ```
 
+For local testing create the file config/local.js with the following configuration:
+
+```json
+module.exports = {
+  connections: {
+    localDiskDb: {
+      adapter  : 'sails-mongo',
+      host     : '<mongodb-host>',
+      port     : <mongodb-port>,
+      user     : '<mongodb-user>',
+      password : '<mongodb-password>',
+      database : 'freshbooks-reporter'
+    }
+  },
+
+  freshbooks: {
+    login   : '<freshbooks-user>',
+    apiKey  : '<freshbooks-api-key>',
+    appName : '<app-name-for-freshbooks-requests>'
+  }
+}
+```
+
 ## Running Your Application
 After the install process is over, you'll be able to run your application with:
 

@@ -2,8 +2,8 @@ var passport = require('passport'),
   LocalStrategy = require('passport-local').Strategy,
   bcrypt = require('bcrypt');
 
-passport.serializeUser(function(user, done) {
-  done(null, user[0].id);
+passport.serializeUser(function(users, done) {
+  done(null, users[0].id);
 });
 
 passport.deserializeUser(function(id, done) {
@@ -14,20 +14,42 @@ passport.deserializeUser(function(id, done) {
 
 passport.use(new LocalStrategy(
   function(username, password, done) {
-    User.findByUsername(username).exec(function(err, user) {
-      if (err) {
-        return done(null, err);
-      }
-      if (!user || user.length < 1) {
-        return done(null, false, {
-          message: 'Incorrect User'
+    User.count().exec(function(err, count){
+      if (!count){
+        //first user trying to access will be the super admin
+        User.create({
+          username: username,
+          password: password,
+          superAdmin: true
+        }).exec(function(err, user){
+          if (err) {
+            return done(null, false, {
+              message: 'Could not create Admin User'
+            });
+          }
+          else {
+            console.log('ADMIN USER CREATED');
+            return done(null, [user]);
+          }
         });
       }
-      bcrypt.compare(password, user[0].password, function(err, res) {
-        if (!res) return done(null, false, {
-          message: 'Invalid Password'
+      else {
+        User.findByUsername(username).exec(function(err, users) {
+          if (err) {
+            return done(null, err);
+          }
+          if (!users || users.length < 1) {
+            return done(null, false, {
+              message: 'Incorrect User'
+            });
+          }
+          bcrypt.compare(password, users[0].password, function(err, res) {
+            if (!res) return done(null, false, {
+              message: 'Invalid Password'
+            });
+            return done(null, users);
+          });
         });
-        return done(null, user);
-      });
+      }
     });
   }));

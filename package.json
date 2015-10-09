@@ -2,7 +2,7 @@
   "dependencies": {
     "bcrypt": "^0.8.0",
     "ejs": "~0.8.4",
-    "freshbooks-node": "git://github.com/roperzh/freshbooks-node.git#fix-empty-request-body",
+    "freshbooks-node": "git://github.com/hubdoc/freshbooks-node.git",
     "grunt": "0.4.2",
     "grunt-bower-task": "^0.4.0",
     "grunt-contrib-clean": "~0.5.0",
@@ -23,13 +23,14 @@
     "rc": "~0.5.0",
     "sails": "^0.10.5",
     "sails-disk": "~0.10.0",
-    "sails-mongo": "git://github.com/roperzh/sails-mongo#issue-177",
-    "validator": "^3.19.0"
+    "sails-mongo": "^0.10.8",
+    "validator": "^3.19.0",
+    "memwatch-next": "^0.2.9"
   },
   "name": "freshbooks-reporter",
   "private": true,
-  "version": "0.0.0",
-  "description": "a Sails application",
+  "version": "0.0.2",
+  "description": "Freshbooks Reporter",
   "keywords": [],
   "scripts": {
     "start": "node app.js",
@@ -38,9 +39,9 @@
   "main": "app.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/roperzh/freshbooks-reporter.git"
+    "url": "git://github.com/andybar2/freshbooks-reporter.git"
   },
-  "author": "roperzh",
+  "author": "andybar2",
   "license": "",
   "devDependencies": {
     "forever": "^0.11.1"

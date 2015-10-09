@@ -7,7 +7,7 @@
 
 module.exports = {
   find: function(req, res) {
-    Freshbooks.api().call('project.list', {}, function(err, response) {
+    Freshbooks.api().call('project.list', {per_page: 100}, function(err, response) {
       if (err) {
         res.json(500, err);
       } else {

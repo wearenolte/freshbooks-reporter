@@ -29,7 +29,7 @@ To install Node.js dependencies, in the application folder run this in the comma
 $ npm install
 ```
 
-For local testing create the file config/local.js with the following configuration:
+For **local testing** create the file config/local.js with the following configuration:
 
 ```javascript
 module.exports = {
@@ -50,6 +50,16 @@ module.exports = {
     appName : '<app-name-for-freshbooks-requests>'
   }
 }
+```
+
+For **production** set the following environment variables:
+
+```
+NODE_ENV            = production
+DB_URL              = mongodb://<mongodb-user>:<mongodb-password>@<mongodb-host>:<mongodb-port>/<mongodb-database>
+FRESHBOOKS_LOGIN    = <freshbooks-user>
+FRESHBOOKS_API_KEY  = <freshbooks-api-key>
+FRESHBOOKS_APP_NAME = <app-name-for-freshbooks-requests>
 ```
 
 ## Running Your Application

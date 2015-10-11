@@ -28,6 +28,7 @@ angular.module('directives.heat-map', ['timeEntries.api'])
             itemSelector: $element[0],
             domain: "month",
             subDomain: "day",
+            itemName: ["hour", "hours"],
             data: rtn,
             start: startDate
           });

@@ -21,13 +21,13 @@ angular.module('timeEntries.api', ['services.date'])
           var projectIdRequest = projectId ? ',"project_id":' + projectId + '}' : '}';
 
           projectId = projectId || '';
-          limit = limit || 500;
+          limit = limit || 0;
 
           $http({
             method: 'GET',
             url: '/timeEntry?' +
-              'where={"limit":500,"date":{">=":"' + DateService.getFromDate(dayOffset) + '"}' +
-              projectIdRequest + "&limit=" + limit
+              'where={"date":{">=":"' + DateService.getFromDate(dayOffset) + '"}' +
+              projectIdRequest + "&limit=" + limit + "&sort=date DESC"
           })
             .then(
               function(response) {

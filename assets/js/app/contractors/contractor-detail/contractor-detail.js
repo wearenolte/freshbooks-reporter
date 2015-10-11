@@ -23,8 +23,9 @@ angular.module('contractor-detail', [
   function ($scope, $location, contractor, projects) {
 
     function filterProjectsByContractor (projects) {
-      return _.where(projects, function(project) {
-        return _.map(project.contractors.contractor, 'contractor_id').indexOf(contractor.staff_id) !== -1;
+      return _.filter(projects, function(project) {
+        var staff = _.isArray(project.staff) ? project.staff : [project.staff];
+        return (_.find(staff, function(s){ s.staff.staff_id == contractor.staff_id; }) !== null);
       });
     };
 

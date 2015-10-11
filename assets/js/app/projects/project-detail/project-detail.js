@@ -19,8 +19,16 @@ angular.module('project-detail', [
 
 .controller('ProjectDetailCtrl', ['$scope', '$location', 'contractors', 'project',
   function ($scope, $location, contractors, project) {
+
+    function filterContractorsByProject (contractors) {
+      return _.filter(contractors, function(contractor) {
+        var staff = _.isArray(project.staff) ? project.staff : [project.staff];
+        return (_.find(staff, function(s){ s.staff.staff_id == contractor.staff_id; }) !== null);
+      });
+    };
+
     $scope.project = project;
-    $scope.contractors = _.map(project.contractors.contractor, function(contractor) {
-      return _.find(contractors, {staff_id: contractor.contractor_id});
-    });
+    $scope.projects = [project];
+    $scope.contractors = contractors;
+    $scope.projectContractors = filterContractorsByProject(contractors);
   }]);

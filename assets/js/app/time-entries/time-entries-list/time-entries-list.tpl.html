@@ -23,6 +23,7 @@
         <tr>
           <th>Project</th>
           <th>Contractor</th>
+          <th>Notes</th>
           <th>Hours</th>
           <th>Date</th>
         </tr>
@@ -30,7 +31,8 @@
       <tbody>
         <tr ng-repeat="timeEntry in timeEntries | filter:timeEntrySearch | byContractor:currentContractor">
           <td ng-bind="timeEntry.project.name"></td>
-          <td ng-bind="fullName(timeEntry.contractor)"></td>
+          <td ng-bind="fullName(timeEntry.contractor)" class="nowrap"></td>
+          <td ng-bind="timeEntry.notes"></td>
           <td ng-bind="timeEntry.hours"></td>
           <td ng-bind="timeEntry.date | date: 'MM/dd/yy'"></td>
         </tr>

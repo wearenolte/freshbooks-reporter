@@ -21,6 +21,10 @@ module.exports = {
       type: 'integer'
     },
 
+    task_id: {
+      type: 'string'
+    },
+
     hours: {
       type: 'float'
     },

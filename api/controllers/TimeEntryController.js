@@ -7,7 +7,7 @@
 
 module.exports = {
   refreshAll: function(req, res) {
-    Parameter.update({name: 'RELOAD_TIME_ENTRIES'}, {value: '1'}).exec(function (err, updated){
+    ParameterManager.set('RELOAD_TIME_ENTRIES', '1', function (err){
       if (err) {
         console.log(err);
         res.json(500);

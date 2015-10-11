@@ -34,7 +34,7 @@
           <td ng-bind="fullName(timeEntry.contractor)" class="nowrap"></td>
           <td ng-bind="timeEntry.notes"></td>
           <td ng-bind="timeEntry.hours"></td>
-          <td ng-bind="timeEntry.date | date: 'MM/dd/yy'"></td>
+          <td ng-bind="dateToString(timeEntry.date)"></td>
         </tr>
       </tbody>
     </table>

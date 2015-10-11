@@ -30,7 +30,7 @@ module.exports = {
     },
 
     date: {
-      type: 'date'
+      type: 'integer'
     },
 
     notes: {

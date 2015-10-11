@@ -11,38 +11,46 @@ module.exports = {
 
   startScrapping: function(options) {
     var dfd = q.defer();
-    var queryOptions = {per_page: 100, page: 1};
 
-    this._startScrappingRec(dfd, queryOptions);
+    TimeEntry.native(function(err, collection) {
+      collection.distinct('staff_id', function(err, staff) {
+        async.eachSeries(staff, function(staff_id, callback) {
+          var queryOptions = {staff_id: staff_id};
+          
+          console.log("queryOptions", queryOptions);
+
+          Freshbooks.api().call('staff.get', queryOptions, function(err, response) {
+            if (err || !response.response.staff)
+              callback(null);
+            else {
+              var contractor = response.response.staff;
+              var attributes = ['staff_id', 'first_name', 'last_name', 'email'];
+
+              Contractor.findOne({staff_id: contractor.staff_id}).exec(function(err, con) {
+                if (err) 
+                  callback(err);
+                else if (!con) {
+                  Contractor.create(_.pick(contractor, attributes)).exec(function(err, res) {
+                    callback(err);
+                  });
+                }
+                else {
+                  Contractor.update({staff_id: contractor.staff_id}, _.pick(contractor, attributes)).exec(function(err, res) {
+                    callback(err);
+                  });
+                }
+              });
+            }
+          });
+        }, function(err){
+          if (err) console.error(err);
+          console.log('============ Scrapping Finished ============');
+          dfd.resolve(true);
+        });
+      });
+    });
 
     return dfd.promise;
-  },
-
-  _startScrappingRec: function(dfd, queryOptions) {
-    var _this = this;
-    
-    console.log("queryOptions", queryOptions);
-    
-    Freshbooks.api().call('staff.list', queryOptions, function(err, response) {
-      if (err) {
-        console.error(err);
-        return dfd.resolve(true);
-      }
-      
-      if (!response.response.staff_members) {
-        console.log('============ Scrapping Finished ============');
-        return dfd.resolve(true);
-      }
-
-      ContractorManager.saveContractors(response.response.staff_members.member)
-        .then(function(err, res) {
-          queryOptions.page++;
-          console.log('============ Scapping page ' + queryOptions.page + ' ============');
-          _this._startScrappingRec(dfd, queryOptions);
-        }, function(err) {
-          console.log(err);
-          return dfd.resolve(true);
-        });
-    });
   }
+
 };

@@ -56,6 +56,14 @@ angular.module('timeEntries.list-directive', [
         };
       };
 
+      $scope.dateToString = function(integerDate) {
+        var dateStr = integerDate.toString();
+        var year = dateStr.substring(2,4);
+        var month = dateStr.substring(4,6);
+        var day = dateStr.substring(6);
+        return month + '/' + day + '/' + year;
+      };
+
       $scope.setDateFilter($scope.dateFilters[0]);
     }
   };

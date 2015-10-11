@@ -26,8 +26,8 @@ angular.module('timeEntries.api', ['services.date'])
           $http({
             method: 'GET',
             url: '/timeEntry?' +
-              'where={"date":{">=":"' + DateService.getFromDate(dayOffset) + '"}' +
-              projectIdRequest + "&limit=" + limit + "&sort=date DESC"
+              'where={"date":{">=":' + DateService.getFromDate(dayOffset) + ', "<":' + DateService.getFromDate(0) + '}' +
+              projectIdRequest + '&limit=' + limit + '&sort=date DESC'
           })
             .then(
               function(response) {

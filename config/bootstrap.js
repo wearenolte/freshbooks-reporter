@@ -13,27 +13,33 @@ module.exports.bootstrap = function(cb) {
 
   function scrap() {
     var PAR_RELOAD_TIME_ENTRIES = 'RELOAD_TIME_ENTRIES';
+    var PAR_RELOAD_PROJECTS     = 'RELOAD_PROJECTS';
+    var PAR_RELOAD_CONTRACTORS  = 'RELOAD_CONTRACTORS';
 
     async.parallel({
       reloadTimeEntries: function(cb){
-        Parameter.findOne({name: PAR_RELOAD_TIME_ENTRIES}).exec(cb);
+        ParameterManager.get(PAR_RELOAD_TIME_ENTRIES, cb);
+      },
+      reloadProjects: function(cb){
+        ParameterManager.get(PAR_RELOAD_PROJECTS, cb);
+      },
+      reloadContractors: function(cb){
+        ParameterManager.get(PAR_RELOAD_CONTRACTORS, cb);
       }
     }, function (err, parms){
       if (err)
         console.log(err);
       else {
         var options = {};
+        var cleanTimeEntries = false;
+        var cleanProjects = false;
+        var cleanContractors = false;
 
-        if (!parms.reloadTimeEntries) {
-          Parameter.create({name: PAR_RELOAD_TIME_ENTRIES, value: '0'}).exec(function (err, updated){
-            if (err)
-              console.log(err);
-          });
-        }
-        else if (parms.reloadTimeEntries.value == '1') {
-          Parameter.update({name: PAR_RELOAD_TIME_ENTRIES}, {value: '0'}).exec(function (err, updated){
-            if (err)
-              console.log(err);
+        if (!parms.reloadTimeEntries || parms.reloadTimeEntries == '1') {
+          cleanTimeEntries = true;
+
+          ParameterManager.set(PAR_RELOAD_TIME_ENTRIES, '0', function(err){
+            if (err) console.log(err);
           });
         }
         else {
@@ -42,13 +48,62 @@ module.exports.bootstrap = function(cb) {
           var dateFrom = new Date();
           
           dateTo.setDate(dateTo.getDate() + 1);
-          options.dateTo = DateFormatter.parse(dateTo);
+          options.dateTo = DateFormatter.dateToString(dateTo);
 
           dateFrom.setDate(dateTo.getDate() - 30);
-          options.dateFrom = DateFormatter.parse(dateFrom);
+          options.dateFrom = DateFormatter.dateToString(dateFrom);
+        }
+
+        if (!parms.reloadProjects || parms.reloadProjects == '1') {
+          cleanProjects = true;
+
+          ParameterManager.set(PAR_RELOAD_PROJECTS, '0', function(err){
+            if (err) console.log(err);
+          });
+        }
+
+        if (!parms.reloadContractors || parms.reloadContractors == '1') {
+          cleanContractors = true;
+
+          ParameterManager.set(PAR_RELOAD_CONTRACTORS, '0', function(err){
+            if (err) console.log(err);
+          });
         }
 
         async.series([
+          function(callback){
+            if (cleanTimeEntries) {
+              console.info("============ Cleaning Time Entries ============");
+              TimeEntry.destroy({}).exec(function(err) {
+                if (err) console.log(err);
+                callback();
+              });
+            }
+            else
+              callback();
+          },
+          function(callback){
+            if (cleanProjects) {
+              console.info("============ Cleaning Projects ============");
+              Project.destroy({}).exec(function(err) {
+                if (err) console.log(err);
+                callback();
+              });
+            }
+            else
+              callback();
+          },
+          function(callback){
+            if (cleanContractors) {
+              console.info("============ Cleaning Contractors ============");
+              Contractor.destroy({}).exec(function(err) {
+                if (err) console.log(err);
+                callback();
+              });
+            }
+            else
+              callback();
+          },
           function(callback){
             console.info("============ Fetching Time Entries ============");
             TimeEntryScrapper.startScrapping(options).then(function(err, res) {

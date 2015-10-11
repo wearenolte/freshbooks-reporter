@@ -5,7 +5,7 @@
 angular.module('services.date', [])
   .factory('DateService',['$filter', function ($filter) {
 
-    var dateFormat = 'yyyy-MM-dd';
+    var dateFormat = 'yyyyMMdd';
 
     var addDays = function (date, days) {
       date.setDate(date.getDate() + days);
@@ -19,7 +19,6 @@ angular.module('services.date', [])
 
       getFromDate: function(dayOffset) {
         dayOffset = typeof dayOffset === "undefined" ? 365 : dayOffset;
-
         return $filter('date')(addDays(new Date(), -dayOffset), dateFormat);
       }
     }

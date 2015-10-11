@@ -1,5 +1,14 @@
-<h3 ng-bind="contractor.first_name + contractor.last_name"></h3>
-<p ng-bind="contractor.email"></p>
+<div class="row margin-top-10 margin-bottom-10">
+  <div class="col-md-1">
+    <a class="pull-left margin-top-20 margin-left-15" href="#">
+      <gravatar email="contractor.email" size="60" class="media-object medium"></gravatar>
+    </a>
+  </div>
+  <div class="col-md-11">
+    <h3 ng-bind="contractor.first_name + ' ' + contractor.last_name"></h3>
+    <p ng-bind="contractor.email"></p>
+  </div>
+</div>
 
 <div class="row">
   <div class="col-md-12">

@@ -13,5 +13,16 @@ module.exports = {
       else
         res.json(200, project);
     });
+  },
+
+  refreshAll: function(req, res) {
+    ParameterManager.set('RELOAD_PROJECTS', '1', function (err){
+      if (err) {
+        console.log(err);
+        res.json(500);
+      }
+      else
+        res.json(200);
+    });
   }
 };

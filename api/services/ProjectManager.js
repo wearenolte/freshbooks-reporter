@@ -18,6 +18,8 @@ module.exports = {
       if (!_.isArray(projects)) projects = [projects];
 
       async.each(projects, function(project, callback) {
+        project.client_id = project.client_id > 0 ? project.client_id : 0;
+
         Project.findOne({project_id: project.project_id}).exec(function(err, te) {
           if (err) 
             callback(err);

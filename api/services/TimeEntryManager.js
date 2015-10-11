@@ -17,6 +17,8 @@ module.exports = {
       if (!_.isArray(timeEntries)) timeEntries = [timeEntries];
 
       async.each(timeEntries, function(timeEntry, callback) {
+        timeEntry.date = DateFormatter.stringToIntegerDate(timeEntry.date);
+
         TimeEntry.findOne({time_entry_id: timeEntry.time_entry_id}).exec(function(err, te) {
           if (err) 
             callback(err);

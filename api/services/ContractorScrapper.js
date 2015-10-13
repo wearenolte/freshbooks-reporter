@@ -25,17 +25,18 @@ module.exports = {
             else {
               var contractor = response.response.staff;
               var attributes = ['staff_id', 'first_name', 'last_name', 'email'];
+              var theContractor = _.pick(contractor, attributes);
 
-              Contractor.findOne({staff_id: contractor.staff_id}).exec(function(err, con) {
+              Contractor.findOne({staff_id: theContractor.staff_id}).exec(function(err, con) {
                 if (err) 
                   callback(err);
                 else if (!con) {
-                  Contractor.create(_.pick(contractor, attributes)).exec(function(err, res) {
+                  Contractor.create(theContractor).exec(function(err, res) {
                     callback(err);
                   });
                 }
                 else {
-                  Contractor.update({staff_id: contractor.staff_id}, _.pick(contractor, attributes)).exec(function(err, res) {
+                  Contractor.update({staff_id: theContractor.staff_id}, theContractor).exec(function(err, res) {
                     callback(err);
                   });
                 }

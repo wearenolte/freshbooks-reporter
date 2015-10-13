@@ -25,6 +25,10 @@ module.exports = {
       type: 'integer'
     },
 
+    budget_hours: {
+      type: 'float'
+    },
+
     staff: {
       type: 'json'
     }

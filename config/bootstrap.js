@@ -11,12 +11,18 @@
 
 module.exports.bootstrap = function(cb) {
 
-  function scrap() {
+  function scrap(init) {
+    console.info("============ SCRAP CHECK ============");
+
+    var PAR_LAST_SCRAP_DATE     = 'LAST_SCRAP_DATE';
     var PAR_RELOAD_TIME_ENTRIES = 'RELOAD_TIME_ENTRIES';
     var PAR_RELOAD_PROJECTS     = 'RELOAD_PROJECTS';
     var PAR_RELOAD_CONTRACTORS  = 'RELOAD_CONTRACTORS';
 
     async.parallel({
+      lastScrap: function(cb){
+        ParameterManager.get(PAR_LAST_SCRAP_DATE, cb);
+      },
       reloadTimeEntries: function(cb){
         ParameterManager.get(PAR_RELOAD_TIME_ENTRIES, cb);
       },
@@ -30,32 +36,33 @@ module.exports.bootstrap = function(cb) {
       if (err)
         console.log(err);
       else {
-        var options = {};
+        var now = new Date();
+        var nowInt = DateFormatter.stringToIntegerDate(DateFormatter.dateToString(now));
+        
         var cleanTimeEntries = false;
         var cleanProjects = false;
         var cleanContractors = false;
+        var scrapTimeEntries = false;
+        var scrapProjects = false;
+        var scrapContractors = false;
 
         if (!parms.reloadTimeEntries || parms.reloadTimeEntries == '1') {
+          //clean and scrap everything because projects and contractors depend on time entries
           cleanTimeEntries = true;
+          cleanProjects = true;
+          cleanContractors = true;
+          scrapTimeEntries = true;
+          scrapProjects = true;
+          scrapContractors = true;
 
           ParameterManager.set(PAR_RELOAD_TIME_ENTRIES, '0', function(err){
             if (err) console.log(err);
           });
         }
-        else {
-          //scrap last 30 days (just in case some entries were added with a previous date)
-          var dateTo   = new Date();
-          var dateFrom = new Date();
-          
-          dateTo.setDate(dateTo.getDate() + 1);
-          options.dateTo = DateFormatter.dateToString(dateTo);
-
-          dateFrom.setDate(dateTo.getDate() - 30);
-          options.dateFrom = DateFormatter.dateToString(dateFrom);
-        }
 
         if (!parms.reloadProjects || parms.reloadProjects == '1') {
           cleanProjects = true;
+          scrapProjects = true;
 
           ParameterManager.set(PAR_RELOAD_PROJECTS, '0', function(err){
             if (err) console.log(err);
@@ -64,11 +71,22 @@ module.exports.bootstrap = function(cb) {
 
         if (!parms.reloadContractors || parms.reloadContractors == '1') {
           cleanContractors = true;
+          scrapContractors = true;
 
           ParameterManager.set(PAR_RELOAD_CONTRACTORS, '0', function(err){
             if (err) console.log(err);
           });
         }
+
+        if (init || !parms.lastScrap || parseInt(parms.lastScrap) < nowInt) {
+          scrapTimeEntries = true;
+          scrapProjects = true;
+          scrapContractors = true;
+
+          ParameterManager.set(PAR_LAST_SCRAP_DATE, nowInt.toString(), function(err){
+            if (err) console.log(err);
+          });
+        }        
 
         async.series([
           function(callback){
@@ -105,22 +123,48 @@ module.exports.bootstrap = function(cb) {
               callback();
           },
           function(callback){
-            console.info("============ Fetching Time Entries ============");
-            TimeEntryScrapper.startScrapping(options).then(function(err, res) {
+            if (scrapTimeEntries) {
+              console.info("============ Fetching Time Entries ============");
+              var options = {};
+
+              if (!cleanTimeEntries) {
+                //set options to scrap last 30 days (just in case some entries were added with a previous date)
+                var dateTo   = now;
+                var dateFrom = now;
+                
+                dateTo.setDate(dateTo.getDate() + 1);
+                options.dateTo = DateFormatter.dateToString(dateTo);
+
+                dateFrom.setDate(dateTo.getDate() - 30);
+                options.dateFrom = DateFormatter.dateToString(dateFrom);
+              }
+
+              TimeEntryScrapper.startScrapping(options).then(function(err, res) {
+                callback();
+              });
+            }
+            else
               callback();
-            });
           },
           function(callback){
-            console.info("============ Fetching Projects ============");
-            ProjectScrapper.startScrapping().then(function(err, res) {
+            if (scrapProjects) {
+              console.info("============ Fetching Projects ============");
+              ProjectScrapper.startScrapping().then(function(err, res) {
+                callback();
+              });
+            }
+            else
               callback();
-            });
           },
           function(callback){
-            console.info("============ Fetching Contractors ============");
-            ContractorScrapper.startScrapping().then(function(err, res) {
+            if (scrapContractors) {
+              console.info("============ Fetching Contractors ============");
+              ContractorScrapper.startScrapping().then(function(err, res) {
+                callback();
+              });
+            }
+            else
               callback();
-            });
           }
         ]);
       }
@@ -128,10 +172,10 @@ module.exports.bootstrap = function(cb) {
   }
 
   //set initial scrap in 10 seconds
-  setTimeout(scrap, 10 * 1000);
+  setTimeout(function(){ scrap(true); }, 10 * 1000);
 
-  //set periodic scrap each hour
-  setInterval(scrap, 60 * 60 * 1000);
+  //set periodic scrap check each 15 minutes
+  setInterval(function(){ scrap(false); }, 15 * 60 * 1000);
 
   //set mem gc each 15 seconds
   setInterval(function(){

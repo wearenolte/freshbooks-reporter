@@ -21,7 +21,7 @@ angular.module('project.api', [])
 
           $http({
             method: 'GET',
-            url: '/project?limit=0&sort=name ASC'
+            url: '/project'
           })
             .then(
               function(response) {

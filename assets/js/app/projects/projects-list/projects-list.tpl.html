@@ -2,13 +2,13 @@
   <thead>
     <tr>
       <th>Name</th>
-      <th>Actions</th>
+      <th class="text-center">Hours / Budget</th>
     </tr>
   </thead>
   <tbody>
     <tr ng-repeat="project in projects">
-      <td ng-bind="project.name"></td>
-      <td><a href="#/projects/{{project.project_id}}">View</a></td>
+      <td><a href="#/projects/{{project.project_id}}" ng-bind="project.name"></a></td>
+      <td class="text-center" ng-bind="project.worked_hours.toFixed(2) + ' / ' + project.budget_hours.toFixed(2)" ng-class="{'red': (project.budget_hours > 0 &&project.worked_hours > project.budget_hours)}"></td>
     </tr>
   </tbody>
 </table>

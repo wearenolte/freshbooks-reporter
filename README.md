@@ -48,6 +48,12 @@ module.exports = {
     login   : '<freshbooks-user>',
     apiKey  : '<freshbooks-api-key>',
     appName : '<app-name-for-freshbooks-requests>'
+  },
+  
+  sendgrid: {
+    apiKey    : '<sendgrid-api-key>',
+    fromEmail : '<sendgrid-from-email>',
+    fromName  : '<sendgrid-from-name>'
   }
 }
 ```
@@ -60,6 +66,9 @@ DB_URL              = mongodb://<mongodb-user>:<mongodb-password>@<mongodb-host>
 FRESHBOOKS_LOGIN    = <freshbooks-user>
 FRESHBOOKS_API_KEY  = <freshbooks-api-key>
 FRESHBOOKS_APP_NAME = <app-name-for-freshbooks-requests>
+SENDGRID_API_KEY    = <sendgrid-api-key>
+SENDGRID_FROM_EMAIL = <sendgrid-from-email>
+SENDGRID_FROM_NAME  = <sendgrid-from-name>
 ```
 
 ## Running Your Application

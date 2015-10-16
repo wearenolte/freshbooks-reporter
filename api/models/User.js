@@ -13,11 +13,23 @@ module.exports = {
       required: true,
       unique: true
     },
+
     password: {
       type: 'string',
       required: true
     },
+
     superAdmin: {
+      type: 'boolean',
+      defaultsTo: false
+    },
+
+    email: {
+      type: 'string',
+      defaultsTo: ''
+    },
+
+    sendNewsletter: {
       type: 'boolean',
       defaultsTo: false
     },

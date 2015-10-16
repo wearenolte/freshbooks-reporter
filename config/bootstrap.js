@@ -11,17 +11,21 @@
 
 module.exports.bootstrap = function(cb) {
 
-  function scrap(init) {
+  function scrap() {
     console.info("============ SCRAP CHECK ============");
 
-    var PAR_LAST_SCRAP_DATE     = 'LAST_SCRAP_DATE';
-    var PAR_RELOAD_TIME_ENTRIES = 'RELOAD_TIME_ENTRIES';
-    var PAR_RELOAD_PROJECTS     = 'RELOAD_PROJECTS';
-    var PAR_RELOAD_CONTRACTORS  = 'RELOAD_CONTRACTORS';
+    var PAR_LAST_SCRAP_DATE      = 'LAST_SCRAP_DATE';
+    var PAR_LAST_NEWSLETTER_DATE = 'LAST_NEWSLETTER_DATE';
+    var PAR_RELOAD_TIME_ENTRIES  = 'RELOAD_TIME_ENTRIES';
+    var PAR_RELOAD_PROJECTS      = 'RELOAD_PROJECTS';
+    var PAR_RELOAD_CONTRACTORS   = 'RELOAD_CONTRACTORS';
 
     async.parallel({
       lastScrap: function(cb){
         ParameterManager.get(PAR_LAST_SCRAP_DATE, cb);
+      },
+      lastNewsletter: function(cb){
+        ParameterManager.get(PAR_LAST_NEWSLETTER_DATE, cb);
       },
       reloadTimeEntries: function(cb){
         ParameterManager.get(PAR_RELOAD_TIME_ENTRIES, cb);
@@ -36,8 +40,7 @@ module.exports.bootstrap = function(cb) {
       if (err)
         console.log(err);
       else {
-        var now = new Date();
-        var nowInt = DateFormatter.stringToIntegerDate(DateFormatter.dateToString(now));
+        var today = DateFormatter.stringToIntegerDate(DateFormatter.dateToString(new Date()));
         
         var cleanTimeEntries = false;
         var cleanProjects = false;
@@ -45,6 +48,7 @@ module.exports.bootstrap = function(cb) {
         var scrapTimeEntries = false;
         var scrapProjects = false;
         var scrapContractors = false;
+        var sendNewsletter = false;
 
         if (!parms.reloadTimeEntries || parms.reloadTimeEntries == '1') {
           //clean and scrap everything because projects and contractors depend on time entries
@@ -78,15 +82,23 @@ module.exports.bootstrap = function(cb) {
           });
         }
 
-        if (init || !parms.lastScrap || parseInt(parms.lastScrap) < nowInt) {
+        if (!parms.lastScrap || parseInt(parms.lastScrap) < today) {
           scrapTimeEntries = true;
           scrapProjects = true;
           scrapContractors = true;
 
-          ParameterManager.set(PAR_LAST_SCRAP_DATE, nowInt.toString(), function(err){
+          ParameterManager.set(PAR_LAST_SCRAP_DATE, today.toString(), function(err){
             if (err) console.log(err);
           });
-        }        
+        }
+
+        if (!parms.lastNewsletter || parseInt(parms.lastNewsletter) < today) {
+          sendNewsletter = true;
+
+          ParameterManager.set(PAR_LAST_NEWSLETTER_DATE, today.toString(), function(err){
+            if (err) console.log(err);
+          });
+        }
 
         async.series([
           function(callback){
@@ -129,8 +141,8 @@ module.exports.bootstrap = function(cb) {
 
               if (!cleanTimeEntries) {
                 //set options to scrap last 30 days (just in case some entries were added with a previous date)
-                var dateTo   = now;
-                var dateFrom = now;
+                var dateTo   = new Date();
+                var dateFrom = new Date();
                 
                 dateTo.setDate(dateTo.getDate() + 1);
                 options.dateTo = DateFormatter.dateToString(dateTo);
@@ -165,6 +177,18 @@ module.exports.bootstrap = function(cb) {
             }
             else
               callback();
+          },
+          function(callback){
+            if (sendNewsletter) {
+              console.info("============ Sending Newsletter ============");
+              TimeEntryManager.sendNewsletter(function(err) {
+                if (err) console.error(err);
+                console.info("============ Finish Sending Newsletter ============");
+                callback();
+              });
+            }
+            else
+              callback();
           }
         ]);
       }
@@ -172,10 +196,10 @@ module.exports.bootstrap = function(cb) {
   }
 
   //set initial scrap in 10 seconds
-  setTimeout(function(){ scrap(true); }, 10 * 1000);
+  setTimeout(scrap, 10 * 1000);
 
   //set periodic scrap check each 15 minutes
-  setInterval(function(){ scrap(false); }, 15 * 60 * 1000);
+  setInterval(scrap, 15 * 60 * 1000);
 
   //set mem gc each 15 seconds
   setInterval(function(){

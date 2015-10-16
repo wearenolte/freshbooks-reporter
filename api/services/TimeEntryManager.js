@@ -88,26 +88,35 @@ module.exports = {
               var mailContent = '';
 
               mailContent += '<html>';
-              mailContent += '<head>';
-              mailContent += '<style>';
-              mailContent += 'table { border-collapse: collapse; }';
-              mailContent += 'td { padding: 8px; }';
-              mailContent += '</style>';
-              mailContent += '</head>';
               mailContent += '<body>';
-              mailContent += '<h2>Freshbooks Reporter - Daily Newsletter</h2>';
-              mailContent += '<h3>Team Time Entries for <font color="#FF5157">' + DateFormatter.dateToString(date) + '</font></h3>';
-              mailContent += '<br/>';
+              mailContent += '<h1 style="font-size: 13pt; text-align: center;">';
+              mailContent +=   '<font color="#253645" style="font-family: monospace; text-decoration: underline;">Freshbooks Reporter - Daily Newsletter</font>';
+              mailContent += '</h1>';
+              mailContent += '<h2 style="font-size: 11pt; margin-top: 20px; text-align: center;">';
+              mailContent +=   '<font color="#253645" style="font-family: monospace;">Team Time Entries for:&nbsp;</font>';
+              mailContent +=   '<font color="#F1658C" style="font-family: monospace;">' + DateFormatter.dateToString(date) + '</font>';
+              mailContent += '</h2>';
 
-              if (timeEntries.length == 0)
-                mailContent += '<span>No time entries found</span>';
-              else {
-                mailContent += '<table>';
+              mailContent += '<table style="border-collapse: collapse; margin-top: 25px; width: 100%;">';
+
+              if (timeEntries.length == 0) {
                 mailContent += '<tr>';
-                mailContent += '<td width="100px"><font color="#A0A0A0">Contractor</font></td>';
-                mailContent += '<td width="100px"><font color="#A0A0A0">Project</font></td>';
-                mailContent += '<td><font color="#A0A0A0">Notes</font></td>';
-                mailContent += '<td align="right"><font color="#A0A0A0">Hours</font></td>';
+                mailContent +=   '<td colspan="2" style="vertical-align: middle;">';
+                mailContent +=     '<hr/>';
+                mailContent +=     '<font color="#A0A0A0" style="font-size: 9pt; font-family: monospace;">No time entries found :(</font>';
+                mailContent +=     '<hr/>';
+                mailContent +=   '</td>';
+                mailContent += '</tr>';
+              }
+              else {
+                //titles
+                mailContent += '<tr>';
+                mailContent +=   '<td style="padding: 8px;">';
+                mailContent +=     '<font color="#A0A0A0" style="font-size: 9pt; font-family: monospace;">Contractor > Project > Notes</font>';
+                mailContent +=   '</td>';
+                mailContent +=   '<td style="padding: 8px;" align="right">';
+                mailContent +=      '<font color="#A0A0A0" style="font-size: 9pt; font-family: monospace;">Hours</font>';
+                mailContent +=   '</td>';
                 mailContent += '</tr>';
 
                 var staffGroup = _.groupBy(timeEntries, function(te) {
@@ -118,9 +127,14 @@ module.exports = {
                   var staff       = _.find(contractors, function(con) { return con.staff_id == staff_id; });
                   var staffTotal  = _.reduce(staff_te, function(total, te) { return total + (te.hours || 0); }, 0);
 
-                  mailContent += '<tr bgcolor="#2c3e50">';
-                  mailContent += '<td colspan="3"><font color="#FFFFFF">' + staff.first_name + ' ' + staff.last_name + '</font></td>';
-                  mailContent += '<td align="right"><font color="#FFFFFF">' + staffTotal.toFixed(2) + '</font></td>';
+                  //contractor
+                  mailContent += '<tr bgcolor="#253645">';
+                  mailContent +=   '<td style="padding: 8px;">';
+                  mailContent +=     '<font color="#FFFFFF" style="font-size: 9pt; font-family: monospace;">' + staff.first_name.toUpperCase() + ' ' + staff.last_name.toUpperCase() + '</font>';
+                  mailContent +=   '</td>';
+                  mailContent +=   '<td style="padding: 8px;" align="right">';
+                  mailContent +=     '<font color="#FFFFFF" style="font-size: 9pt; font-family: monospace;">' + staffTotal.toFixed(2) + '</font>';
+                  mailContent +=   '</td>';
                   mailContent += '</tr>';
 
                   var projectsGroup = _.groupBy(staff_te, function(te) {
@@ -131,10 +145,14 @@ module.exports = {
                     var project      = _.find(projects, function(pro) { return pro.project_id == project_id; });
                     var projectTotal = _.reduce(project_te, function(total, te) { return total + (te.hours || 0); }, 0);
 
-                    mailContent += '<tr>';
-                    mailContent += '<td></td>';
-                    mailContent += '<td colspan="2" bgcolor="#18bc9c"><font color="#FFFFFF">' + project.name + '</font></td>';
-                    mailContent += '<td align="right" bgcolor="#18bc9c"><font color="#FFFFFF">' + projectTotal.toFixed(2) + '</font></td>';
+                    //project
+                    mailContent += '<tr bgcolor="#F1658C">';
+                    mailContent +=   '<td style="padding: 8px;">';
+                    mailContent +=     '<font color="#FFFFFF" style="font-size: 9pt; font-family: monospace;">' + project.name.toUpperCase() + '</font>';
+                    mailContent +=   '</td>';
+                    mailContent +=   '<td style="padding: 8px;" align="right">';
+                    mailContent +=     '<font color="#FFFFFF" style="font-size: 9pt; font-family: monospace;">' + projectTotal.toFixed(2) + '</font>';
+                    mailContent +=   '</td>';
                     mailContent += '</tr>';
 
                     var i = 0;
@@ -142,26 +160,37 @@ module.exports = {
                     _.each(project_te, function(te) {
                       var color = (i % 2 == 0 ? 'E8E8E8' : 'FFFFFF');
 
-                      mailContent += '<tr>';
-                      mailContent += '<td></td>';
-                      mailContent += '<td></td>';
-                      mailContent += '<td bgcolor="#' + color + '">' + (te.notes && te.notes.trim() != '' ? te.notes.trim() : '-') + '</td>';
-                      mailContent += '<td bgcolor="#' + color + '" align="right">' + te.hours.toFixed(2) + '</td>';
+                      //time entry
+                      mailContent += '<tr bgcolor="#F8F8FF" style="border-bottom: 1px solid #F1658C;">';
+                      mailContent +=   '<td style="padding: 8px; text-align: justify;">';
+                      mailContent +=     '<font style="font-size: 8pt; font-family: monospace;">' + (te.notes && te.notes.trim() != '' ? te.notes.trim() : '-') + '</font>';
+                      mailContent +=   '</td>';
+                      mailContent +=   '<td style="padding: 8px;" align="right">';
+                      mailContent +=     '<font style="font-size: 8pt; font-family: monospace;">' + te.hours.toFixed(2) + '</font>';
+                      mailContent +=   '</td>';
                       mailContent += '</tr>';
 
                       i++;
                     });
                   });
 
-                  mailContent += '<tr height="5px">';
-                  mailContent += '<td colspan="4"></td>';
+                  //separator
+                  mailContent += '<tr height="15px">';
+                  mailContent +=   '<td colspan="2"></td>';
                   mailContent += '</tr>';
                 });
-
-                mailContent += '</table>';
-                mailContent += '<br/>';
               }
 
+              //signature
+              mailContent += '<tr height="40px" align="center">';
+              mailContent +=   '<td colspan="2" style="vertical-align: middle;">';
+              mailContent +=     '<a href="https://getmoxied.net/">';
+              mailContent +=       '<font color="#A0A0A0" style="font-size: 7pt; font-family: monospace;">Powered by Moxie Media Group, Inc.</font>';
+              mailContent +=     '</a>';
+              mailContent +=   '</td>';
+              mailContent += '</tr>';
+
+              mailContent += '</table>';
               mailContent += '</body>';
               mailContent += '</html>';
 

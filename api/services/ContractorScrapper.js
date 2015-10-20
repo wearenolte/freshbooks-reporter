@@ -17,7 +17,7 @@ module.exports = {
         async.eachSeries(staff, function(staff_id, callback) {
           var queryOptions = {staff_id: staff_id};
           
-          console.log("queryOptions", queryOptions);
+          console.log('Scrapping Contractor: ' + staff_id);
 
           Freshbooks.api().call('staff.get', queryOptions, function(err, response) {
             if (err || !response.response.staff)
@@ -44,8 +44,7 @@ module.exports = {
             }
           });
         }, function(err){
-          if (err) console.error(err);
-          console.log('============ Scrapping Finished ============');
+          if (err) console.log(err);
           dfd.resolve(true);
         });
       });

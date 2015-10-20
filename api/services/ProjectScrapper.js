@@ -17,7 +17,7 @@ module.exports = {
         async.eachSeries(projects, function(project_id, callback) {
           var queryOptions = {project_id: project_id};
           
-          console.log("queryOptions", queryOptions);
+          console.log('Scrapping Project: ' + project_id);
 
           Freshbooks.api().call('project.get', queryOptions, function(err, response) {
             if (err || !response.response.project)
@@ -51,8 +51,7 @@ module.exports = {
             }
           });
         }, function(err){
-          if (err) console.error(err);
-          console.log('============ Scrapping Finished ============');
+          if (err) console.log(err);
           dfd.resolve(true);
         });
       });

@@ -12,21 +12,15 @@
 module.exports.bootstrap = function(cb) {
 
   function scrap() {
-    console.info("============ SCRAP CHECK ============");
+    console.log("============= SCRAP CHECK =============");
 
-    var PAR_LAST_SCRAP_DATE      = 'LAST_SCRAP_DATE';
-    var PAR_LAST_NEWSLETTER_DATE = 'LAST_NEWSLETTER_DATE';
     var PAR_RELOAD_TIME_ENTRIES  = 'RELOAD_TIME_ENTRIES';
     var PAR_RELOAD_PROJECTS      = 'RELOAD_PROJECTS';
     var PAR_RELOAD_CONTRACTORS   = 'RELOAD_CONTRACTORS';
+    var PAR_LAST_SCRAP_DATE      = 'LAST_SCRAP_DATE';
+    var PAR_LAST_NEWSLETTER_DATE = 'LAST_NEWSLETTER_DATE';
 
     async.parallel({
-      lastScrap: function(cb){
-        ParameterManager.get(PAR_LAST_SCRAP_DATE, cb);
-      },
-      lastNewsletter: function(cb){
-        ParameterManager.get(PAR_LAST_NEWSLETTER_DATE, cb);
-      },
       reloadTimeEntries: function(cb){
         ParameterManager.get(PAR_RELOAD_TIME_ENTRIES, cb);
       },
@@ -35,28 +29,39 @@ module.exports.bootstrap = function(cb) {
       },
       reloadContractors: function(cb){
         ParameterManager.get(PAR_RELOAD_CONTRACTORS, cb);
+      },
+      lastScrap: function(cb){
+        ParameterManager.get(PAR_LAST_SCRAP_DATE, cb);
+      },
+      lastNewsletter: function(cb){
+        ParameterManager.get(PAR_LAST_NEWSLETTER_DATE, cb);
       }
     }, function (err, parms){
       if (err)
         console.log(err);
       else {
-        var today = DateFormatter.stringToIntegerDate(DateFormatter.dateToString(new Date()));
+        var now   = new Date();
+        var today = DateFormatter.stringToIntegerDate(DateFormatter.dateToString(now));
         
         var cleanTimeEntries = false;
-        var cleanProjects = false;
+        var cleanProjects    = false;
         var cleanContractors = false;
         var scrapTimeEntries = false;
-        var scrapProjects = false;
+        var scrapProjects    = false;
         var scrapContractors = false;
-        var sendNewsletter = false;
+        var sendNewsletter   = false;
 
+        var scrapTime      = 3; //periodic scrap after 3:00
+        var newsletterTime = 8; //periodic newsletter after 8:00
+
+        //check complete time entries reload
         if (!parms.reloadTimeEntries || parms.reloadTimeEntries == '1') {
           //clean and scrap everything because projects and contractors depend on time entries
           cleanTimeEntries = true;
-          cleanProjects = true;
+          cleanProjects    = true;
           cleanContractors = true;
           scrapTimeEntries = true;
-          scrapProjects = true;
+          scrapProjects    = true;
           scrapContractors = true;
 
           ParameterManager.set(PAR_RELOAD_TIME_ENTRIES, '0', function(err){
@@ -64,6 +69,7 @@ module.exports.bootstrap = function(cb) {
           });
         }
 
+        //check complete projects reload
         if (!parms.reloadProjects || parms.reloadProjects == '1') {
           cleanProjects = true;
           scrapProjects = true;
@@ -73,6 +79,7 @@ module.exports.bootstrap = function(cb) {
           });
         }
 
+        //check complete contractors reload
         if (!parms.reloadContractors || parms.reloadContractors == '1') {
           cleanContractors = true;
           scrapContractors = true;
@@ -82,9 +89,10 @@ module.exports.bootstrap = function(cb) {
           });
         }
 
-        if (!parms.lastScrap || parseInt(parms.lastScrap) < today) {
+        //scrap every day after scrapTime
+        if ((!parms.lastScrap || parseInt(parms.lastScrap) < today) && now.getHours() >= scrapTime) {
           scrapTimeEntries = true;
-          scrapProjects = true;
+          scrapProjects    = true;
           scrapContractors = true;
 
           ParameterManager.set(PAR_LAST_SCRAP_DATE, today.toString(), function(err){
@@ -92,7 +100,8 @@ module.exports.bootstrap = function(cb) {
           });
         }
 
-        if (!parms.lastNewsletter || parseInt(parms.lastNewsletter) < today) {
+        //send newsletter every day after newsletterTime
+        if ((!parms.lastNewsletter || parseInt(parms.lastNewsletter) < today) && now.getHours() >= newsletterTime) {
           sendNewsletter = true;
 
           ParameterManager.set(PAR_LAST_NEWSLETTER_DATE, today.toString(), function(err){
@@ -103,9 +112,10 @@ module.exports.bootstrap = function(cb) {
         async.series([
           function(callback){
             if (cleanTimeEntries) {
-              console.info("============ Cleaning Time Entries ============");
+              console.log("-------- Cleaning Time Entries --------");
               TimeEntry.destroy({}).exec(function(err) {
                 if (err) console.log(err);
+                console.log("------ End Cleaning Time Entries ------");
                 callback();
               });
             }
@@ -114,9 +124,10 @@ module.exports.bootstrap = function(cb) {
           },
           function(callback){
             if (cleanProjects) {
-              console.info("============ Cleaning Projects ============");
+              console.log("---------- Cleaning Projects ----------");
               Project.destroy({}).exec(function(err) {
                 if (err) console.log(err);
+                console.log("-------- End Cleaning Projects --------");
                 callback();
               });
             }
@@ -125,9 +136,10 @@ module.exports.bootstrap = function(cb) {
           },
           function(callback){
             if (cleanContractors) {
-              console.info("============ Cleaning Contractors ============");
+              console.log("--------- Cleaning Contractors --------");
               Contractor.destroy({}).exec(function(err) {
                 if (err) console.log(err);
+                console.log("------- End Cleaning Contractors ------");
                 callback();
               });
             }
@@ -136,7 +148,7 @@ module.exports.bootstrap = function(cb) {
           },
           function(callback){
             if (scrapTimeEntries) {
-              console.info("============ Fetching Time Entries ============");
+              console.log("-------- Fetching Time Entries --------");
               var options = {};
 
               if (!cleanTimeEntries) {
@@ -152,6 +164,7 @@ module.exports.bootstrap = function(cb) {
               }
 
               TimeEntryScrapper.startScrapping(options).then(function(err, res) {
+                console.log('------ End Fetching Time Entries ------');
                 callback();
               });
             }
@@ -160,8 +173,9 @@ module.exports.bootstrap = function(cb) {
           },
           function(callback){
             if (scrapProjects) {
-              console.info("============ Fetching Projects ============");
+              console.log("---------- Fetching Projects ----------");
               ProjectScrapper.startScrapping().then(function(err, res) {
+                console.log("-------- End Fetching Projects --------");
                 callback();
               });
             }
@@ -170,8 +184,9 @@ module.exports.bootstrap = function(cb) {
           },
           function(callback){
             if (scrapContractors) {
-              console.info("============ Fetching Contractors ============");
+              console.log("--------- Fetching Contractors --------");
               ContractorScrapper.startScrapping().then(function(err, res) {
+                console.log("------- End Fetching Contractors ------");
                 callback();
               });
             }
@@ -180,17 +195,20 @@ module.exports.bootstrap = function(cb) {
           },
           function(callback){
             if (sendNewsletter) {
-              console.info("============ Sending Newsletter ============");
+              console.log("---------- Sending Newsletter ---------");
               TimeEntryManager.sendNewsletter(function(err) {
-                if (err) console.error(err);
-                console.info("============ Finish Sending Newsletter ============");
+                if (err) console.log(err);
+                console.log("-------- End Sending Newsletter -------");
                 callback();
               });
             }
             else
               callback();
           }
-        ]);
+        ],
+        function(err, results){
+          console.log("=========== END SCRAP CHECK ===========");
+        });
       }
     });
   }

@@ -55,5 +55,6 @@ module.exports.routes = {
 
   'post /timeEntry/refresh-all': 'TimeEntryController.refreshAll',
   'post /project/refresh-all': 'ProjectController.refreshAll',
-  'post /contractor/refresh-all': 'ContractorController.refreshAll'
+  'post /contractor/refresh-all': 'ContractorController.refreshAll',
+  'post /user/update': 'UserController.update'
 };

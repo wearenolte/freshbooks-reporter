@@ -59,7 +59,7 @@ angular.module('security.service', [])
 
     // Is the current user an adminstrator?
     isAdmin: function() {
-      return !!(service.currentUser && service.currentUser.admin);
+      return !!(service.currentUser && service.currentUser.superAdmin);
     }
   };
 

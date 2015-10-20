@@ -9,14 +9,10 @@ module.exports = {
   find: function(req, res) {
     async.parallel({
       projects: function(callback){
-        Project.find().sort('name ASC').exec(function(err, projects) {
-          callback(err, projects);
-        });
+        Project.find().sort('name ASC').exec(callback);
       },
       workedHours: function(callback){
-        TimeEntry.find().groupBy('project_id').sum('hours').exec(function(err, res) {
-          callback(err, res);
-        });
+        TimeEntry.find().groupBy('project_id').sum('hours').exec(callback);
       }
     }, function (err, results){
       if (err)

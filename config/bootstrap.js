@@ -19,6 +19,7 @@ module.exports.bootstrap = function(cb) {
     var PAR_RELOAD_CONTRACTORS   = 'RELOAD_CONTRACTORS';
     var PAR_LAST_SCRAP_DATE      = 'LAST_SCRAP_DATE';
     var PAR_LAST_NEWSLETTER_DATE = 'LAST_NEWSLETTER_DATE';
+    var PAR_SCRAP_ERROR          = 'SCRAP_ERROR';
 
     async.parallel({
       reloadTimeEntries: function(cb){
@@ -50,9 +51,10 @@ module.exports.bootstrap = function(cb) {
         var scrapProjects    = false;
         var scrapContractors = false;
         var sendNewsletter   = false;
+        var scrapError       = false;
 
-        var scrapTime      = 3; //periodic scrap after 3:00
-        var newsletterTime = 8; //periodic newsletter after 8:00
+        var scrapTime      = 5; //do periodic scrap every day after this hour
+        var newsletterTime = 9; //send periodic newsletter every day after this hour
 
         //check complete time entries reload
         if (!parms.reloadTimeEntries || parms.reloadTimeEntries == '1') {
@@ -163,18 +165,37 @@ module.exports.bootstrap = function(cb) {
                 options.dateFrom = DateFormatter.dateToString(dateFrom);
               }
 
-              TimeEntryScrapper.startScrapping(options).then(function(err, res) {
+              TimeEntryScrapper.startScrapping(options).then(function(res) {
                 console.log('------ End Fetching Time Entries ------');
-                callback();
+
+                //clean error parameter
+                ParameterManager.unset(PAR_SCRAP_ERROR, function(err){
+                  if (err) console.log(err);
+                  callback();
+                });
+              }, function(err) {
+                console.log('----- Error Fetching Time Entries -----');
+                scrapError = true;
+
+                //set error parameter
+                ParameterManager.set(PAR_SCRAP_ERROR, '1', function(err){
+                  if (err) console.log(err);
+
+                  //clean scrap date parameter in order to try again on next check
+                  ParameterManager.unset(PAR_LAST_SCRAP_DATE, function(err){
+                    if (err) console.log(err);
+                    callback();
+                  });
+                });
               });
             }
             else
               callback();
           },
           function(callback){
-            if (scrapProjects) {
+            if (scrapProjects && !scrapError) {
               console.log("---------- Fetching Projects ----------");
-              ProjectScrapper.startScrapping().then(function(err, res) {
+              ProjectScrapper.startScrapping().then(function(res) {
                 console.log("-------- End Fetching Projects --------");
                 callback();
               });
@@ -183,9 +204,9 @@ module.exports.bootstrap = function(cb) {
               callback();
           },
           function(callback){
-            if (scrapContractors) {
+            if (scrapContractors && !scrapError) {
               console.log("--------- Fetching Contractors --------");
-              ContractorScrapper.startScrapping().then(function(err, res) {
+              ContractorScrapper.startScrapping().then(function(res) {
                 console.log("------- End Fetching Contractors ------");
                 callback();
               });

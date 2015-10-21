@@ -30,19 +30,19 @@ module.exports = {
     Freshbooks.api().call('time_entry.list', queryOptions, function(err, response) {
       if (err) {
         console.log(err);
-        return dfd.resolve(true);
+        return dfd.reject(err);
       }
       
       if (!response.response.time_entries)
         return dfd.resolve(true);
 
       TimeEntryManager.saveTimeEntries(response.response.time_entries.time_entry)
-        .then(function(err, res) {
+        .then(function() {
           queryOptions.page++;
           _this._startScrappingRec(dfd, queryOptions);
         }, function(err) {
           console.log(err);
-          return dfd.resolve(true);
+          return dfd.reject(err);
         });
     });
   }

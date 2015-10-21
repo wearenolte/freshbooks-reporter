@@ -27,5 +27,11 @@ module.exports = {
         });
       }
     });
+  },
+
+  unset: function(name, callback) {
+    Parameter.destroy({name: name}).exec(function(err){
+      callback(err);
+    });
   }
 };

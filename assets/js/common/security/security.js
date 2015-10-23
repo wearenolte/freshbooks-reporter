@@ -1,6 +1,6 @@
 angular.module('security.service', [])
 
-.factory('security',['$http', '$q', '$location', function($http, $q, $location) {
+.factory('security',['$http', '$q', '$location', 'toastr', function($http, $q, $location, toastr) {
 
   // Redirect to the given url (defaults to '/')
   function redirect(url) {
@@ -17,36 +17,32 @@ angular.module('security.service', [])
 
     // Attempt to authenticate a user by the given username and password
     login: function(username, password) {
-      var request = $http.post('/login', {username: username, password: password});
-      return request.then(function(response) {
+      $http.post('/login', {username: username, password: password}).then(function(response) {
         service.currentUser = response.data[0];
-        return service.isAuthenticated();
+        redirect('/dashboard');
+      }, function(err) {
+        toastr.error("Invalid username or password");
       });
     },
 
     // Logout the current user and redirect
-    logout: function(redirectTo) {
-      $http.post('/logout').then(function() {
+    logout: function() {
+      $http.get('/logout').then(function() {
         service.currentUser = null;
-        redirect(redirectTo);
+        redirect('/login');
       });
     },
 
     // Ask the backend to see if a user is already authenticated - this may be from a previous session.
     requestCurrentUser: function() {
-      if ( service.isAuthenticated() ) {
-        return $q.when(service.currentUser);
-      } else {
-        return $http.get('/current-user').then(function(response) {
-          service.currentUser = response.data[0];
-          return service.currentUser;
-        }, function(response) {
-          if (response.status === 401) {
-            service.currentUser = null;
-            redirect('/login')
-          };
-        });
-      }
+      $http.get('/current-user').then(function(response) {
+        service.currentUser = response.data[0];
+      }, function(response) {
+        if (response.status === 401) {
+          service.currentUser = null;
+          redirect('/login')
+        };
+      });
     },
 
     // Information about the current user

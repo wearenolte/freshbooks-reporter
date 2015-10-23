@@ -6,8 +6,27 @@
  */
 
 module.exports = {
+  add: function(req, res) {
+    var data = req.param('data');
+
+    User.create({
+      username: data.username,
+      password: data.password,
+      superAdmin: false,
+      email: '',
+      sendNewsletter: false
+    }).exec(function (err, user){
+      if (err) {
+        console.log(err);
+        res.json(500);
+      }
+      else
+        res.json(200);
+    });
+  },
+
   update: function(req, res) {
-    var data = rew.params.data;
+    var data = req.param('data');
 
     User.update(req.user.id, {
       email: data.email,
@@ -20,5 +39,11 @@ module.exports = {
       else
         res.json(200);
     });
+  },
+
+  _config: {
+    actions: false,
+    shortcuts: false,
+    rest: false
   }
 };

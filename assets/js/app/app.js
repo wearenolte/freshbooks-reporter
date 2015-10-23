@@ -2,11 +2,13 @@ angular.module('app', [
   'ngRoute',
   'ngAnimate',
   'angular-loading-bar',
+  'toastr',
   'security',
   'login',
   'dashboard',
   'contractor-detail',
-  'project-detail'
+  'project-detail',
+  'adduser'
 ]);
 
 angular.module('app').config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
@@ -30,14 +32,25 @@ angular.module('app').controller('AppCtrl', ['$scope', function($scope) {
 angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route', 'security',
   function ($scope, $location, $route, security) {
 
-  $scope.isAuthenticated = function() {
-    var res = security.isAuthenticated();
-    $('#header-btns').show();
-    return res;
+    $scope.isAuthenticated = function() {
+      var res = security.isAuthenticated();
+      $('#header-btns').show();
+      return res;
+    };
+
+    $scope.isActive = function (path) {
+      return $location.path() === path;
+    };
+
+    $scope.isAdmin = function() {
+      return security.isAdmin();
+    };
+
+    $scope.logout = function() {
+      security.logout();
+    };
+
+    $scope.location = $location;
+
   }
-
-  $scope.isActive = function (path) {
-    return $location.path() === path;
-  };
-
-}]);
+]);

@@ -42,7 +42,7 @@
     "type": "git",
     "url": "git://github.com/andybar2/freshbooks-reporter.git"
   },
-  "author": "andybar2",
+  "author": "MoxieNYC",
   "license": "",
   "devDependencies": {
     "forever": "^0.11.1"

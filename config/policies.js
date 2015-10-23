@@ -27,11 +27,18 @@ module.exports.policies = {
   ***************************************************************************/
 
   '*': 'Authenticated',
+
   AuthController: {
     '*': true,
   },
+
   TemplateController: {
     '*': true
+  },
+
+  UserController: {
+    add: ['Authenticated','IsAdmin'],
+    '*': 'Authenticated'
   }
 
   /***************************************************************************

@@ -8,7 +8,8 @@ angular.module('app', [
   'dashboard',
   'contractor-detail',
   'project-detail',
-  'adduser'
+  'adduser',
+  'settings'
 ]);
 
 angular.module('app').config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {

@@ -7,13 +7,20 @@
   <div class="col-md-3"></div>
   <div class="col-md-6">
     <form role="form" ng-submit="addUser(user)">
+      <hr/>
       <div class="form-group">
-        <input id="username" type="text" class="form-control" placeholder="Username" required="" autofocus="" ng-model="user.username">
+        <label>User name:</label>
+        <input id="username" type="text" class="form-control" placeholder="Enter the new user name" required="" autofocus="" ng-model="user.username">
       </div>
+      <hr/>
       <div class="form-group">
-        <input id="password" type="password" class="form-control" placeholder="Password" required="" ng-model="user.password">
+        <label>Password:</label>
+        <input id="password" type="password" class="form-control" placeholder="And his/her password" required="" ng-model="user.password">
       </div>
-      <button class="btn btn-lg btn-primary btn-block" type="submit">Confirm</button>
+      <hr/>
+      <div class="text-right">
+        <button class="btn btn-success" type="submit">Confirm</button>
+      </div>
     </form>
   </div>
   <div class="col-md-3"></div>

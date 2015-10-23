@@ -28,7 +28,7 @@ module.exports = {
   update: function(req, res) {
     var data = req.param('data');
 
-    User.update(req.user.id, {
+    User.update(req.user[0].id, {
       email: data.email,
       sendNewsletter: data.sendNewsletter
     }).exec(function (err, updated){

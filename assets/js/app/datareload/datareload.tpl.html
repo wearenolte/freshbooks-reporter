@@ -1,0 +1,48 @@
+<div class="row margin-top-30">
+  <div class="col-md-12">
+    <h2>Data Reload:</h2>
+  </div>
+</div>
+<div class="row margin-top-20">
+  <div class="col-md-3"></div>
+  <div class="col-md-6">
+    <form role="form">
+      <hr/>
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-9">
+            <label>Do you want to reload all <span class="text-info">Time Entries</span> data?</label>
+            <p class="text-muted">Projects and Contractors will be reloaded too.</p>
+          </div>
+          <div class="col-md-3 text-right">
+            <button class="btn btn-info" type="submit" ng-click="reloadTimeEntries()">Reload</button>
+          </div>
+        </div>
+      </div>
+      <hr/>
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-9">
+            <label>Do you want to reload all <span class="text-danger">Projects</span> data?</label>
+          </div>
+          <div class="col-md-3 text-right">
+            <button class="btn btn-danger" type="submit" ng-click="reloadProjects()">Reload</button>
+          </div>
+        </div>
+      </div>
+      <hr/>
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-9">
+            <label>Do you want to reload all <span class="text-warning">Contractors</span> data?</label>
+          </div>
+          <div class="col-md-3 text-right">
+            <button class="btn btn-warning" type="submit" ng-click="reloadContractors()">Reload</button>
+          </div>
+        </div>
+      </div>
+      <hr/>
+    </form>
+  </div>
+  <div class="col-md-3"></div>
+</div>

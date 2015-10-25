@@ -14,6 +14,7 @@
         <li ng-class="{active: isActive('/dashboard')}" ng-show="isAuthenticated()"><a href="" ng-click="location.path('/dashboard')">Dashboard</a></li>
         <li ng-class="{active: isActive('/settings')}" ng-show="isAuthenticated()"><a href="" ng-click="location.path('/settings')">Settings</a></li>
         <li ng-class="{active: isActive('/adduser')}" ng-show="isAuthenticated() && isAdmin()"><a href="" ng-click="location.path('/adduser')">Add User</a></li>
+        <li ng-class="{active: isActive('/datareload')}" ng-show="isAuthenticated() && isAdmin()"><a href="" ng-click="location.path('/datareload')">Data Reload</a></li>
         <li ng-show="isAuthenticated()"><a href="" ng-click="logout()">Logout</a></li>
       </ul>
     </div><!--/.nav-collapse -->

@@ -9,7 +9,8 @@ angular.module('app', [
   'contractor-detail',
   'project-detail',
   'adduser',
-  'settings'
+  'settings',
+  'datareload'
 ]);
 
 angular.module('app').config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {

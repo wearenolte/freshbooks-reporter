@@ -18,20 +18,20 @@ angular.module('timeEntries.list-directive', [
       var parseTimeEntries = function(timeEntries) {
         return _.map(timeEntries, function(timeEntry) {
           timeEntry.contractor = _.find($scope.contractors, {staff_id: timeEntry.staff_id.toString()});
-          timeEntry.project = _.find($scope.projects, {project_id: timeEntry.project_id.toString()});
+          timeEntry.project = _.find($scope.projects, {project_id: timeEntry.project_id});
           return timeEntry;
         });
       };
 
       $scope.dateFilters = [
         {
-          name: "Today",
-          dayOffset: 0
+          name: "Yesterday",
+          dayOffset: 1
         }, {
-          name: "This Week",
+          name: "Last Week",
           dayOffset: 7
         }, {
-          name: "This Month",
+          name: "Last Month",
           dayOffset: 30
         }, {
           name: "Last Year",
@@ -54,6 +54,14 @@ angular.module('timeEntries.list-directive', [
         } else {
           return "-";
         };
+      };
+
+      $scope.dateToString = function(integerDate) {
+        var dateStr = integerDate.toString();
+        var year = dateStr.substring(2,4);
+        var month = dateStr.substring(4,6);
+        var day = dateStr.substring(6);
+        return month + '/' + day + '/' + year;
       };
 
       $scope.setDateFilter($scope.dateFilters[0]);

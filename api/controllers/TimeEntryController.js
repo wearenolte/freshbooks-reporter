@@ -7,12 +7,13 @@
 
 module.exports = {
   refreshAll: function(req, res) {
-    TimeEntryScrapper.startScrapping().then(function(err, res) {
-      if(err) {
-        res.json(500, err);
-      } else {
-        res.json(200);
+    ParameterManager.set('RELOAD_TIME_ENTRIES', '1', function (err){
+      if (err) {
+        console.log(err);
+        res.json(500);
       }
+      else
+        res.json(200);
     });
   }
 };

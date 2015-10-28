@@ -1,10 +1,16 @@
-<h2 ng-bind="project.name"></h2>
-<strong ng-bind="project.description"></strong>
+<div class="row margin-top-10 margin-bottom-10">
+  <div class="col-md-12">
+    <h2 ng-bind="project.name"></h2>
+    <strong ng-bind="project.description"></strong>
+  </div>
+</div>
+
+<div class="row">
+  <!-- Time Entries List -->
+  <div class="col-md-12" time-entries-list contractors="contractors" projects="[project]" filter-by-project="project.project_id"></div>
+</div>
 
 <div class="row">
   <!-- Contractors List -->
-  <div class="col-md-3" contractors-list contractors="contractors"></div>
-
-  <!-- Time Entries List -->
-  <div class="col-md-9" time-entries-list contractors="contractors" projects="[project]" filter-by-project="project.project_id"></div>
+  <div class="col-md-12" contractors-list contractors="contractors"></div>
 </div>

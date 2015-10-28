@@ -27,11 +27,33 @@ module.exports.policies = {
   ***************************************************************************/
 
   '*': 'Authenticated',
+
   AuthController: {
     '*': true,
   },
+
+  ContractorController: {
+    refreshAll: ['Authenticated','IsAdmin'],
+    '*': 'Authenticated'
+  },
+
+  ProjectController: {
+    refreshAll: ['Authenticated','IsAdmin'],
+    '*': 'Authenticated'
+  },
+
   TemplateController: {
     '*': true
+  },
+
+  TimeEntryController: {
+    refreshAll: ['Authenticated','IsAdmin'],
+    '*': 'Authenticated'
+  },
+
+  UserController: {
+    add: ['Authenticated','IsAdmin'],
+    '*': 'Authenticated'
   }
 
   /***************************************************************************

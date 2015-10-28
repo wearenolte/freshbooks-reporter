@@ -20,7 +20,11 @@ angular.module('directives.heat-map', ['timeEntries.api'])
         .then(function(response) {
           var allTimeEntries = $filter('byContractor')(response, $scope.contractor);
           _.each(allTimeEntries, function(timeEntry) {
-            var date = Math.round(new Date(timeEntry.date).getTime() / 1000.0);
+            var dateStr = timeEntry.date.toString();
+            var year = dateStr.substring(0,4);
+            var month = dateStr.substring(4,6);
+            var day = dateStr.substring(6);
+            var date = Math.round(new Date(year, month-1, day).getTime() / 1000.0);
             rtn[date] = rtn[date] ? rtn[date] + timeEntry.hours : timeEntry.hours;
           });
 
@@ -28,6 +32,7 @@ angular.module('directives.heat-map', ['timeEntries.api'])
             itemSelector: $element[0],
             domain: "month",
             subDomain: "day",
+            itemName: ["hour", "hours"],
             data: rtn,
             start: startDate
           });

@@ -29,6 +29,48 @@ To install Node.js dependencies, in the application folder run this in the comma
 $ npm install
 ```
 
+For **local testing** create the file config/local.js with the following configuration:
+
+```javascript
+module.exports = {
+  connections: {
+    localDiskDb: {
+      adapter  : 'sails-mongo',
+      host     : '<mongodb-host>',
+      port     : <mongodb-port>,
+      user     : '<mongodb-user>',
+      password : '<mongodb-password>',
+      database : 'freshbooks-reporter'
+    }
+  },
+
+  freshbooks: {
+    login   : '<freshbooks-user>',
+    apiKey  : '<freshbooks-api-key>',
+    appName : '<app-name-for-freshbooks-requests>'
+  },
+  
+  sendgrid: {
+    apiKey    : '<sendgrid-api-key>',
+    fromEmail : '<sendgrid-from-email>',
+    fromName  : '<sendgrid-from-name>'
+  }
+}
+```
+
+For **production** set the following environment variables:
+
+```
+NODE_ENV            = production
+DB_URL              = mongodb://<mongodb-user>:<mongodb-password>@<mongodb-host>:<mongodb-port>/<mongodb-database>
+FRESHBOOKS_LOGIN    = <freshbooks-user>
+FRESHBOOKS_API_KEY  = <freshbooks-api-key>
+FRESHBOOKS_APP_NAME = <app-name-for-freshbooks-requests>
+SENDGRID_API_KEY    = <sendgrid-api-key>
+SENDGRID_FROM_EMAIL = <sendgrid-from-email>
+SENDGRID_FROM_NAME  = <sendgrid-from-name>
+```
+
 ## Running Your Application
 After the install process is over, you'll be able to run your application with:
 

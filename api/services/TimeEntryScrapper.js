@@ -9,31 +9,41 @@ var q = require('q');
 
 module.exports = {
 
-  currentPage: 1,
-
   startScrapping: function(options) {
     var dfd = q.defer();
-    var _this = this;
-    var queryOptions = {per_page: 100, page: _this.currentPage};
+    var queryOptions = {per_page: 100, page: 1};
 
-    if(options.dateFrom) queryOptions['date_from'] = options.dateFrom;
-console.log("queryOptions", queryOptions);
-    Freshbooks.api().call('time_entry.list', queryOptions, function(err, response) {
-      if (err) return console.error(err);
-      if (!response.response.time_entries) {
-        console.log('============ Scrapping Finished ============');
-        _this.currentPage = 1;
-        return dfd.resolve(true);
-      }
+    if (options.dateFrom) queryOptions['date_from'] = options.dateFrom;
+    if (options.dateTo) queryOptions['date_to'] = options.dateTo;
 
-      TimeEntryManager.saveTimeEntries(response.response.time_entries.time_entry)
-        .then(function(err, res) {
-          _this.currentPage++;
-          console.log('============ Scapping page ' + _this.currentPage + ' ============');
-          _this.startScrapping();
-        });
-    });
+    console.log("queryOptions", queryOptions);
+    this._startScrappingRec(dfd, queryOptions);
 
     return dfd.promise;
+  },
+
+  _startScrappingRec: function(dfd, queryOptions) {
+    var _this = this;
+    
+    console.log('Scrapping Page: ' + queryOptions.page);
+    
+    Freshbooks.api().call('time_entry.list', queryOptions, function(err, response) {
+      if (err) {
+        console.log(err);
+        return dfd.reject(err);
+      }
+      
+      if (!response.response.time_entries)
+        return dfd.resolve(true);
+
+      TimeEntryManager.saveTimeEntries(response.response.time_entries.time_entry)
+        .then(function() {
+          queryOptions.page++;
+          _this._startScrappingRec(dfd, queryOptions);
+        }, function(err) {
+          console.log(err);
+          return dfd.reject(err);
+        });
+    });
   }
 };

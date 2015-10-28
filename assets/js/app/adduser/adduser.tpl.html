@@ -1,0 +1,27 @@
+<div class="row margin-top-30">
+  <div class="col-md-12">
+    <h2>Add New User:</h2>
+  </div>
+</div>
+<div class="row margin-top-20">
+  <div class="col-md-3"></div>
+  <div class="col-md-6">
+    <form role="form" ng-submit="addUser(user)">
+      <hr/>
+      <div class="form-group">
+        <label>User name:</label>
+        <input id="username" type="text" class="form-control" placeholder="Enter the new user name" required="" autofocus="" ng-model="user.username">
+      </div>
+      <hr/>
+      <div class="form-group">
+        <label>Password:</label>
+        <input id="password" type="password" class="form-control" placeholder="And his/her password" required="" ng-model="user.password">
+      </div>
+      <hr/>
+      <div class="text-right">
+        <button class="btn btn-success" type="submit">Confirm</button>
+      </div>
+    </form>
+  </div>
+  <div class="col-md-3"></div>
+</div>

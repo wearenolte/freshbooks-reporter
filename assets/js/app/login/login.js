@@ -13,10 +13,7 @@ angular.module('login', [])
 .controller('LoginCtrl', ['$scope', '$location', 'security',
   function($scope, $location, security) {
     $scope.login = function(user) {
-      security.login(user.username, user.password)
-        .then(function() {
-          $location.path('/dashboard');
-        });
+      security.login(user.username, user.password);
     };
   }
 ]);

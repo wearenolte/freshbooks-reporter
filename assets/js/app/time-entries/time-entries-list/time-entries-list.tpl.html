@@ -1,4 +1,4 @@
-<div class="panel panel-primary">
+<div class="panel panel-info">
   <div class="panel-heading clearfix">
     <h3 class="panel-title pull-left">Time Entries</h3>
 
@@ -23,16 +23,18 @@
         <tr>
           <th>Project</th>
           <th>Contractor</th>
+          <th>Notes</th>
           <th>Hours</th>
           <th>Date</th>
         </tr>
       </thead>
       <tbody>
         <tr ng-repeat="timeEntry in timeEntries | filter:timeEntrySearch | byContractor:currentContractor">
-          <td ng-bind="timeEntry.project.name"></td>
-          <td ng-bind="fullName(timeEntry.contractor)"></td>
+          <td ng-bind="timeEntry.project.name" class="width-20"></td>
+          <td ng-bind="fullName(timeEntry.contractor)" class="width-20"></td>
+          <td ng-bind="timeEntry.notes"></td>
           <td ng-bind="timeEntry.hours"></td>
-          <td ng-bind="timeEntry.date | date: 'MM/dd/yy'"></td>
+          <td ng-bind="dateToString(timeEntry.date)"></td>
         </tr>
       </tbody>
     </table>

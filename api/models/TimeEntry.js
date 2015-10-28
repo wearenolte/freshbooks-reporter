@@ -21,12 +21,16 @@ module.exports = {
       type: 'integer'
     },
 
+    task_id: {
+      type: 'string'
+    },
+
     hours: {
       type: 'float'
     },
 
     date: {
-      type: 'date'
+      type: 'integer'
     },
 
     notes: {

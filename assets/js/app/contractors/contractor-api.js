@@ -21,7 +21,7 @@ angular.module('contractor.api', [])
 
           $http({
             method: 'GET',
-            url: '/contractor'
+            url: '/contractor?limit=0&sort=first_name ASC'
           })
             .then(
               function(response) {

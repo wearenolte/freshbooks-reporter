@@ -32,6 +32,9 @@
   "private": true,
   "version": "0.0.2",
   "description": "Freshbooks Reporter",
+  "engines": {
+    "node": "0.11.x"
+  },
   "keywords": [],
   "scripts": {
     "start": "node app.js",

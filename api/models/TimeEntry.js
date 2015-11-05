@@ -22,7 +22,7 @@ module.exports = {
     },
 
     task_id: {
-      type: 'string'
+      type: 'integer'
     },
 
     hours: {

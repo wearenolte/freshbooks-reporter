@@ -1,5 +1,5 @@
 /**
-* Contractor.js
+* Task.js
 *
 * @description :: TODO: You might write a short summary of how this model works and what it represents here.
 * @docs        :: http://sailsjs.org/#!documentation/models
@@ -8,20 +8,16 @@
 module.exports = {
 
   attributes: {
-    staff_id: {
+    task_id: {
       type: 'integer',
       required: true
     },
 
-    first_name: {
+    name: {
       type: 'string'
     },
 
-    last_name: {
-      type: 'string'
-    },
-
-    email: {
+    description: {
       type: 'string'
     }
   }

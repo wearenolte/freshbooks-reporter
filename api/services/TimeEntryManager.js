@@ -69,7 +69,6 @@ module.exports = {
 
           var aMonthAgo = new Date();
           aMonthAgo.setMonth(aMonthAgo.getMonth() - 1);
-
           var aMonthAgoInt = DateFormatter.stringToIntegerDate(DateFormatter.dateToString(aMonthAgo));
 
           async.parallel({

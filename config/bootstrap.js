@@ -17,6 +17,7 @@ module.exports.bootstrap = function(cb) {
     var PAR_RELOAD_TIME_ENTRIES  = 'RELOAD_TIME_ENTRIES';
     var PAR_RELOAD_PROJECTS      = 'RELOAD_PROJECTS';
     var PAR_RELOAD_CONTRACTORS   = 'RELOAD_CONTRACTORS';
+    var PAR_RELOAD_TASKS         = 'RELOAD_TASKS';
     var PAR_LAST_SCRAP_DATE      = 'LAST_SCRAP_DATE';
     var PAR_LAST_NEWSLETTER_DATE = 'LAST_NEWSLETTER_DATE';
     var PAR_SCRAP_ERROR          = 'SCRAP_ERROR';
@@ -30,6 +31,9 @@ module.exports.bootstrap = function(cb) {
       },
       reloadContractors: function(cb){
         ParameterManager.get(PAR_RELOAD_CONTRACTORS, cb);
+      },
+      reloadTasks: function(cb){
+        ParameterManager.get(PAR_RELOAD_TASKS, cb);
       },
       lastScrap: function(cb){
         ParameterManager.get(PAR_LAST_SCRAP_DATE, cb);
@@ -47,9 +51,13 @@ module.exports.bootstrap = function(cb) {
         var cleanTimeEntries = false;
         var cleanProjects    = false;
         var cleanContractors = false;
+        var cleanTasks       = false;
+
         var scrapTimeEntries = false;
         var scrapProjects    = false;
         var scrapContractors = false;
+        var scrapTasks       = false;
+
         var sendNewsletter   = false;
         var scrapError       = false;
 
@@ -62,9 +70,12 @@ module.exports.bootstrap = function(cb) {
           cleanTimeEntries = true;
           cleanProjects    = true;
           cleanContractors = true;
+          cleanTasks       = true;
+
           scrapTimeEntries = true;
           scrapProjects    = true;
           scrapContractors = true;
+          scrapTasks       = true;
 
           ParameterManager.set(PAR_RELOAD_TIME_ENTRIES, '0', function(err){
             if (err) console.log(err);
@@ -91,11 +102,22 @@ module.exports.bootstrap = function(cb) {
           });
         }
 
+        //check complete tasks reload
+        if (!parms.reloadTasks || parms.reloadTasks == '1') {
+          cleanTasks = true;
+          scrapTasks = true;
+
+          ParameterManager.set(PAR_RELOAD_TASKS, '0', function(err){
+            if (err) console.log(err);
+          });
+        }
+
         //scrap every day after scrapTime
         if ((!parms.lastScrap || parseInt(parms.lastScrap) < today) && now.getHours() >= scrapTime) {
           scrapTimeEntries = true;
           scrapProjects    = true;
           scrapContractors = true;
+          scrapTasks       = true;
 
           ParameterManager.set(PAR_LAST_SCRAP_DATE, today.toString(), function(err){
             if (err) console.log(err);
@@ -142,6 +164,18 @@ module.exports.bootstrap = function(cb) {
               Contractor.destroy({}).exec(function(err) {
                 if (err) console.log(err);
                 console.log("------- End Cleaning Contractors ------");
+                callback();
+              });
+            }
+            else
+              callback();
+          },
+          function(callback){
+            if (cleanTasks) {
+              console.log("------------ Cleaning Tasks -----------");
+              Task.destroy({}).exec(function(err) {
+                if (err) console.log(err);
+                console.log("---------- End Cleaning Tasks ---------");
                 callback();
               });
             }
@@ -208,6 +242,17 @@ module.exports.bootstrap = function(cb) {
               console.log("--------- Fetching Contractors --------");
               ContractorScrapper.startScrapping().then(function(res) {
                 console.log("------- End Fetching Contractors ------");
+                callback();
+              });
+            }
+            else
+              callback();
+          },
+          function(callback){
+            if (scrapTasks && !scrapError) {
+              console.log("------------ Fetching Tasks -----------");
+              TaskScrapper.startScrapping().then(function(res) {
+                console.log("---------- End Fetching Tasks ---------");
                 callback();
               });
             }

@@ -262,7 +262,7 @@ module.exports.bootstrap = function(cb) {
           function(callback){
             if (sendNewsletter) {
               console.log("---------- Sending Newsletter ---------");
-              TimeEntryManager.sendNewsletter(function(err) {
+              Newsletter.send(function(err) {
                 if (err) console.log(err);
                 console.log("-------- End Sending Newsletter -------");
                 callback();

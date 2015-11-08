@@ -42,6 +42,11 @@ module.exports.policies = {
     '*': 'Authenticated'
   },
 
+  TaskController: {
+    refreshAll: ['Authenticated','IsAdmin'],
+    '*': 'Authenticated'
+  },
+
   TemplateController: {
     '*': true
   },

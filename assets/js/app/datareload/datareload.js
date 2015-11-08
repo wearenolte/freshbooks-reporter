@@ -40,6 +40,14 @@ angular.module('datareload', [
         toastr.error("Internal error: Could not set reload flag");
       });
     };
+
+    $scope.reloadTasks = function() {
+      $http.post('/task/refresh-all', {}).then(function(response) {
+        toastr.success("Tasks data will be reloaded soon");
+      }, function(err) {
+        toastr.error("Internal error: Could not set reload flag");
+      });
+    };
     
   }
 ]);

@@ -11,14 +11,16 @@ angular.module('timeEntries.list-directive', [
     scope: {
       projects: '=',
       contractors: '=',
+      tasks: '=',
       currentContractor: '=',
       filterByProject: '='
     },
     link: function($scope, $element, $attrs) {
       var parseTimeEntries = function(timeEntries) {
         return _.map(timeEntries, function(timeEntry) {
-          timeEntry.contractor = _.find($scope.contractors, {staff_id: timeEntry.staff_id.toString()});
+          timeEntry.contractor = _.find($scope.contractors, {staff_id: timeEntry.staff_id});
           timeEntry.project = _.find($scope.projects, {project_id: timeEntry.project_id});
+          timeEntry.task = _.find($scope.tasks, {task_id: timeEntry.task_id});
           return timeEntry;
         });
       };
@@ -51,6 +53,17 @@ angular.module('timeEntries.list-directive', [
       $scope.fullName = function(contractor) {
         if (contractor) {
           return contractor.first_name + " " + contractor.last_name;
+        } else {
+          return "-";
+        };
+      };
+
+      $scope.taskAndNotes = function(timeEntry) {
+        if (timeEntry) {
+          if (timeEntry.task)
+            return '[' + timeEntry.task.name + '] ' + timeEntry.notes;
+          else
+            return timeEntry.notes;
         } else {
           return "-";
         };

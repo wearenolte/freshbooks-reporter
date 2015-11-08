@@ -3,24 +3,26 @@ angular.module('contractor-detail', [
   'contractor.api',
   'projects.list',
   'project.api',
+  'tasks.api',
   'directives.heat-map'
 ])
 
-.config(['$routeProvider', 'securityAuthorizationProvider', 'contractorProvider', 'projectProvider',
-  function ($routeProvider, securityAuthorizationProvider, contractorProvider, projectProvider) {
+.config(['$routeProvider', 'securityAuthorizationProvider', 'contractorProvider', 'projectProvider', 'tasksProvider',
+  function ($routeProvider, securityAuthorizationProvider, contractorProvider, projectProvider, tasksProvider) {
     $routeProvider.when('/contractor/:contractorId', {
       templateUrl:'templates/contractors/contractor-detail/contractor-detail.tpl.html',
       controller:'ContractorDetailCtrl',
       resolve:{
         authenticatedUser: securityAuthorizationProvider.requireAuthenticatedUser,
         contractor: contractorProvider.getContractor,
-        projects: projectProvider.getAllProjects
+        projects: projectProvider.getAllProjects,
+        tasks: tasksProvider.getAllTasks
       }
     });
 }])
 
-.controller('ContractorDetailCtrl', ['$scope', '$location', 'contractor', 'projects',
-  function ($scope, $location, contractor, projects) {
+.controller('ContractorDetailCtrl', ['$scope', '$location', 'contractor', 'projects', 'tasks',
+  function ($scope, $location, contractor, projects, tasks) {
 
     function filterProjectsByContractor (projects) {
       return _.filter(projects, function(project) {
@@ -32,5 +34,6 @@ angular.module('contractor-detail', [
     $scope.contractor = contractor;
     $scope.contractors = [contractor];
     $scope.projects = projects;
+    $scope.tasks = tasks;
     $scope.contractorProjects = filterProjectsByContractor(projects);
   }]);

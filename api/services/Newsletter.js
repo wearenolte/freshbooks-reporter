@@ -7,6 +7,7 @@
 
 module.exports = {
   send: function(callback) {
+    var sanitizeHtml    = require('sanitize-html');
     var PAR_SCRAP_ERROR = 'SCRAP_ERROR';
 
     User.find({sendNewsletter: true}).exec(function(err, users){
@@ -190,7 +191,7 @@ module.exports = {
                         mailContent +=   '<td width="20px" style="padding: 8px;"></td>';
                         mailContent +=   '<td width="20px" style="padding: 8px;"></td>';
                         mailContent +=   '<td bgcolor="' + lgrey + '" style="border-bottom: 1px solid ' + pink + '; padding: 8px; text-align: justify;">';
-                        mailContent +=     '<font style="font-size: 8pt;">' + notes + '</font>';
+                        mailContent +=     '<font style="font-size: 8pt;">' + sanitizeHtml(notes) + '</font>';
                         mailContent +=   '</td>';
                         mailContent +=   '<td bgcolor="' + lgrey + '" style="border-bottom: 1px solid ' + pink + '; padding: 8px;" align="right">';
                         mailContent +=     '<font style="font-size: 8pt;">' + te.hours.toFixed(2) + '</font>';

@@ -27,7 +27,14 @@ module.exports = {
 
   currentUser: function(req, res) {
     if (req.isAuthenticated()) {
-      return res.json(200, req.user);
+      if (req.user && req.user.length > 0 && req.user[0].superAdmin) {
+        ParameterManager.get('EXTRA_EMAILS', function(err, val){
+          req.user[0].extraEmails = val || '';
+          return res.json(200, req.user);
+        });
+      }
+      else
+        return res.json(200, user);
     } else {
       return res.json(401, {messages: ['Unauthorized']})
     }

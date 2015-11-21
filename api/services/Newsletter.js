@@ -7,8 +7,9 @@
 
 module.exports = {
   send: function(callback) {
-    var sanitizeHtml    = require('sanitize-html');
-    var PAR_SCRAP_ERROR = 'SCRAP_ERROR';
+    var sanitizeHtml     = require('sanitize-html');
+    var PAR_SCRAP_ERROR  = 'SCRAP_ERROR';
+    var PAR_EXTRA_EMAILS = 'EXTRA_EMAILS';
 
     User.find({sendNewsletter: true}).exec(function(err, users){
       if (err)
@@ -64,6 +65,9 @@ module.exports = {
             scrapError: function(cb){
               ParameterManager.get(PAR_SCRAP_ERROR, cb);
             },
+            extraEmails: function(cb){
+              ParameterManager.get(PAR_EXTRA_EMAILS, cb);
+            }
           },
           function(err, results) {
             if (err)
@@ -76,7 +80,19 @@ module.exports = {
               var workedHours    = results.workedHours;
               var activeProjects = results.activeProjects;
               var scrapError     = results.scrapError;
+              var extraEmails    = results.extraEmails;
 
+              //add extra emails
+              if (extraEmails && extraEmails.trim() != '') {
+                var ee = extraEmails.split(',');
+
+                _.each(ee, function(email){
+                  if (email.trim() != '')
+                    toEmails.push(email.trim());
+                });
+              }
+
+              // build newsletter
               var blue  = '#253645';
               var pink  = '#F1658C';
               var lgrey = '#F8F8FF';

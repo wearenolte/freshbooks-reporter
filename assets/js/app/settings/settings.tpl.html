@@ -29,6 +29,11 @@
         </div>
       </div>
       <hr/>
+      <div class="form-group" ng-show="currentUser.superAdmin">
+        <label>Are there any extra emails you want to include in the daily newsletter?</label>
+        <textarea id="extraEmails" class="form-control" rows="3" placeholder="Enter emails separated by comma" autofocus="" ng-model="currentUser.extraEmails"></textarea>
+      </div>
+      <hr ng-show="currentUser.superAdmin" />
       <div class="text-right">
         <button class="btn btn-success" type="submit">Confirm</button>
       </div>

@@ -16,7 +16,6 @@ angular.module('settings', [
 
 .controller('SettingsCtrl', ['$scope', '$http', 'toastr', 'security',
   function ($scope, $http, toastr, security) {
-    
     $scope.currentUser = security.currentUser;
 
     $scope.updUser = function(user) {

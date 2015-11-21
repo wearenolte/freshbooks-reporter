@@ -36,8 +36,20 @@ module.exports = {
         console.log(err);
         res.json(500);
       }
-      else
-        res.json(200);
+      else {
+        if (req.user && req.user.length > 0 && req.user[0].superAdmin) {
+          ParameterManager.set('EXTRA_EMAILS', data.extraEmails, function (err){
+            if (err) {
+              console.log(err);
+              res.json(500);
+            }
+            else
+              res.json(200);
+          });
+        }
+        else
+          res.json(200);
+      }
     });
   },
 

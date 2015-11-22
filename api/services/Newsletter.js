@@ -99,8 +99,6 @@ module.exports = {
               var dgrey = '#A0A0A0';
               var white = '#FFFFFF';
 
-              var loggedContractors = [];
-
               var mailTitle   = 'Daily Newsletter ' + DateFormatter.dateToString(date);
               var mailContent = '';
 
@@ -139,8 +137,15 @@ module.exports = {
                   mailContent +=     '<font color="' + dgrey + '" style="font-size: 9pt;">No time entries found :(</font>';
                   mailContent +=   '</td>';
                   mailContent += '</tr>';
+
+                  //separator
+                  mailContent += '<tr height="20px">';
+                  mailContent +=   '<td colspan="4"></td>';
+                  mailContent += '</tr>';
                 }
                 else {
+                  var loggedContractors = [];
+
                   //titles
                   mailContent += '<tr>';
                   mailContent +=   '<td colspan="3" style="padding: 8px;">';
@@ -221,39 +226,39 @@ module.exports = {
                     mailContent +=   '<td colspan="4"></td>';
                     mailContent += '</tr>';
                   });
-                }
 
-                //
-                // CONTRACTORS WHO DID NOT LOGGED TIME
-                //
+                  //
+                  // CONTRACTORS WHO DID NOT LOG TIME
+                  //
 
-                if (loggedContractors.length != contractors.length) {
-                  var names = '';
+                  if (loggedContractors.length != contractors.length) {
+                    var names = '';
 
-                  _.each(contractors, function(con) {
-                    var found = _.find(loggedContractors, function(staff_id) { return con.staff_id == staff_id; });
+                    _.each(contractors, function(con) {
+                      var found = _.find(loggedContractors, function(staff_id) { return con.staff_id == staff_id; });
 
-                    if (!found)
-                      names += (names != '' ? ',&nbsp;&nbsp;' : '') + con.first_name + ' ' + con.last_name;
-                  });
+                      if (!found)
+                        names += (names != '' ? ',&nbsp;&nbsp;' : '') + con.first_name + ' ' + con.last_name;
+                    });
 
-                  //note
-                  mailContent += '<tr>';
-                  mailContent +=   '<td colspan="4" style="padding: 8px; text-align: justify;">';
-                  mailContent +=     '<font color="' + blue + '" style="font-style: italic;"><u>NOTE</u>: The following contractors did not log time this day:</font>';
-                  mailContent +=   '</td>';
-                  mailContent += '</tr>';
-                  mailContent += '<tr>';
-                  mailContent +=   '<td width="20px" style="padding: 8px;"></td>';
-                  mailContent +=   '<td colspan="3" style="padding: 8px; text-align: justify;">';
-                  mailContent +=     '<font color="' + blue + '" style="font-style: italic;">' + names + '</font>';
-                  mailContent +=   '</td>';
-                  mailContent += '</tr>';
+                    //note
+                    mailContent += '<tr>';
+                    mailContent +=   '<td colspan="4" style="padding: 8px; text-align: justify;">';
+                    mailContent +=     '<font color="' + blue + '" style="font-style: italic;"><u>NOTE</u>: The following contractors did not log time this day:</font>';
+                    mailContent +=   '</td>';
+                    mailContent += '</tr>';
+                    mailContent += '<tr>';
+                    mailContent +=   '<td width="20px" style="padding: 8px;"></td>';
+                    mailContent +=   '<td colspan="3" style="padding: 8px; text-align: justify;">';
+                    mailContent +=     '<font color="' + blue + '" style="font-style: italic;">' + names + '</font>';
+                    mailContent +=   '</td>';
+                    mailContent += '</tr>';
 
-                  //separator
-                  mailContent += '<tr height="20px">';
-                  mailContent +=   '<td colspan="4"></td>';
-                  mailContent += '</tr>';
+                    //separator
+                    mailContent += '<tr height="20px">';
+                    mailContent +=   '<td colspan="4"></td>';
+                    mailContent += '</tr>';
+                  }
                 }
                 
                 mailContent += '</table>';

@@ -51,14 +51,15 @@ module.exports = {
             workedHours: function(cb){
               TimeEntry.find().groupBy('project_id').sum('hours').exec(cb);
             },
-            activeProjects: function(cb){
-              //consider active projects the ones that have time entries in the last month
+            activeProjAndContr: function(cb){
+              //consider active projects and contractors the ones that have time entries in the last month
               TimeEntry.find({date: {'>=': aMonthAgoInt, '<': todayInt}}).exec(function(err, timeEntries){
                 if (err) 
                   cb(err, null);
                 else {
-                  var activeProjects = _.uniq(_.map(timeEntries, 'project_id'));
-                  cb(null, activeProjects);
+                  var activeProjects    = _.uniq(_.map(timeEntries, 'project_id'));
+                  var activeContractors = _.uniq(_.map(timeEntries, 'staff_id'));
+                  cb(null, {projects: activeProjects, contractors: activeContractors});
                 }
               });
             },
@@ -73,14 +74,15 @@ module.exports = {
             if (err)
               callback(err);
             else {
-              var timeEntries    = results.timeEntries;
-              var projects       = results.projects;
-              var contractors    = results.contractors;
-              var tasks          = results.tasks;
-              var workedHours    = results.workedHours;
-              var activeProjects = results.activeProjects;
-              var scrapError     = results.scrapError;
-              var extraEmails    = results.extraEmails;
+              var timeEntries       = results.timeEntries;
+              var projects          = results.projects;
+              var contractors       = results.contractors;
+              var tasks             = results.tasks;
+              var workedHours       = results.workedHours;
+              var activeProjects    = results.activeProjAndContr.projects;
+              var activeContractors = results.activeProjAndContr.contractors;
+              var scrapError        = results.scrapError;
+              var extraEmails       = results.extraEmails;
 
               //add extra emails
               if (extraEmails && extraEmails.trim() != '') {
@@ -104,6 +106,11 @@ module.exports = {
 
               mailContent += '<html>';
               mailContent += '<body>';
+              mailContent += '<table style="border-collapse: collapse; width: 100%;">';
+
+              //start block
+              mailContent += '<tr>';
+              mailContent += '<td>';
 
               //
               // TITLE
@@ -231,14 +238,16 @@ module.exports = {
                   // CONTRACTORS WHO DID NOT LOG TIME
                   //
 
-                  if (loggedContractors.length != contractors.length) {
+                  if (loggedContractors.length != activeContractors.length) {
                     var names = '';
 
-                    _.each(contractors, function(con) {
-                      var found = _.find(loggedContractors, function(staff_id) { return con.staff_id == staff_id; });
+                    _.each(activeContractors, function(ac) {
+                      var found = _.find(loggedContractors, function(staff_id) { return ac == staff_id; });
 
-                      if (!found)
-                        names += (names != '' ? ',&nbsp;&nbsp;' : '') + con.first_name + ' ' + con.last_name;
+                      if (!found) {
+                        var staff  = _.find(contractors, function(con) { return con.staff_id == ac; });
+                        names     += (names != '' ? ',&nbsp;&nbsp;' : '') + staff.first_name + ' ' + staff.last_name;
+                      }
                     });
 
                     //note
@@ -262,7 +271,21 @@ module.exports = {
                 }
                 
                 mailContent += '</table>';
-                mailContent += '<hr/>';
+
+                //close block
+                mailContent += '</td>';
+                mailContent += '</tr>';
+
+                //line
+                mailContent += '<tr>';
+                mailContent +=   '<td>';
+                mailContent +=     '<hr/>';
+                mailContent +=   '</td>';
+                mailContent += '</tr>';
+                
+                //start block
+                mailContent += '<tr>';
+                mailContent += '<td>';
 
                 //
                 // PROJECTS SUMMARY
@@ -330,21 +353,40 @@ module.exports = {
                 mailContent += '</table>';
               }
 
+              //close block
+              mailContent += '</td>';
+              mailContent += '</tr>';
+
+              //line
+              mailContent += '<tr>';
+              mailContent +=   '<td>';
+              mailContent +=     '<hr/>';
+              mailContent +=   '</td>';
+              mailContent += '</tr>';
+              
+              //start block
+              mailContent += '<tr>';
+              mailContent += '<td>';
+
               //
               // SIGNATURE
               //
 
-              mailContent += '<hr/>';
               mailContent += '<table style="border-collapse: collapse; width: 100%;">';
-              mailContent += '<tr height="40px" align="center">';
-              mailContent +=   '<td style="vertical-align: middle;">';
-              mailContent +=     '<a href="https://getmoxied.net/">';
-              mailContent +=       '<font color="' + dgrey + '" style="font-size: 7pt; font-family: monospace;">Powered by Moxie Media Group, Inc.</font>';
-              mailContent +=     '</a>';
-              mailContent +=   '</td>';
-              mailContent += '</tr>';
+              mailContent +=   '<tr height="40px" align="center">';
+              mailContent +=     '<td style="vertical-align: middle;">';
+              mailContent +=       '<a href="https://getmoxied.net/">';
+              mailContent +=         '<font color="' + dgrey + '" style="font-size: 7pt; font-family: monospace;">Powered by Moxie Media Group, Inc.</font>';
+              mailContent +=       '</a>';
+              mailContent +=     '</td>';
+              mailContent +=   '</tr>';
               mailContent += '</table>';
 
+              //close block
+              mailContent += '</td>';
+              mailContent += '</tr>';
+
+              mailContent += '</table>';
               mailContent += '</body>';
               mailContent += '</html>';
 
